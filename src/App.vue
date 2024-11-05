@@ -1,5 +1,8 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterLink, RouterView } from 'vue-router';
+import { useUserStore } from '@/stores/userStore';
+
+const userStore = useUserStore();
 </script>
 
 <template>
@@ -7,12 +10,15 @@ import { RouterLink, RouterView } from 'vue-router'
     <div>
       <nav>
         <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
+        <RouterLink to="/login">Login</RouterLink>
+        <RouterLink to="/register">Register</RouterLink>
       </nav>
     </div>
   </header>
 
   <RouterView />
+
+  <p>Logged in user email : {{ userStore.getUser.email ?? 'none' }}</p>
 </template>
 
 <style scoped></style>
