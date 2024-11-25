@@ -2,23 +2,15 @@
 import { RouterLink, RouterView } from 'vue-router';
 import { useUserStore } from '@/stores/userStore';
 
+import MobileLayout from '@/layouts/MobileLayout.vue';
+
 const userStore = useUserStore();
 </script>
 
 <template>
-  <header>
-    <div>
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/login">Login</RouterLink>
-        <RouterLink to="/register">Register</RouterLink>
-      </nav>
-    </div>
-  </header>
-
-  <RouterView />
-
-  <p>Logged in user email : {{ userStore.getUser.email ?? 'none' }}</p>
+  <MobileLayout>
+    <RouterView />
+  </MobileLayout>
 </template>
 
 <style scoped></style>

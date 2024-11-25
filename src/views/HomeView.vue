@@ -1,5 +1,17 @@
-<script setup></script>
+<script setup>
+import AppPublicationCard from '@/components/AppPublicationCard.vue';
+
+console.log('HomeView');
+</script>
 
 <template>
-  <main>Home</main>
+  <main>
+    evneo
+    <AppPublicationCard />
+  </main>
 </template>
+<style>
+* {
+  color: white;
+}
+</style>
