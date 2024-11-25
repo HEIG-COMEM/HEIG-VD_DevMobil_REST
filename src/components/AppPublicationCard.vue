@@ -28,7 +28,7 @@ const smallCamera = computed(() => {
 </script>
 
 <template>
-  <div class="border border-blue-500 p-1">
+  <div>
     <div class="flex flex-row content-center justify-between gap-2 px-1">
       <div class="aspect-square h-10 self-center rounded-full bg-white"></div>
       <div class="flex-grow">
