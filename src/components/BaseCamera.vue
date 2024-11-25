@@ -129,6 +129,12 @@ const changeCamera = async deviceID => {
   emit('camera-change', deviceID);
 };
 
+const changeFacingMode = async facingMode => {
+  stop();
+  constraints.video.facingMode = facingMode;
+  await start();
+};
+
 const resume = () => {
   video.value?.play();
   emit('resumed');
@@ -155,13 +161,23 @@ defineExpose({
   pause,
   resume,
   changeCamera,
+  changeFacingMode,
   stream,
 });
 </script>
 
 <template>
   <div id="camera-container">
-    <video autoplay ref="video" id="video"></video>
+    <video
+      autoplay
+      ref="video"
+      id="video"
+      :class="{
+        'scale-x-[-1] transform': props.facingMode === 'user',
+      }"
+      :height="`${resolution.height}px`"
+      :width="`${resolution.width}px`"
+    ></video>
 
     <div id="slot-container">
       <slot></slot>
@@ -175,10 +191,10 @@ defineExpose({
   position: relative;
 }
 
-#video {
+/* #video {
   width: 100%;
   height: auto;
-}
+} */
 
 #slot-container {
   position: absolute;

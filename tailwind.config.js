@@ -8,7 +8,10 @@ export default {
       colors: {
         black: '#121212',
         onSurface: '#1D1D1D',
-      }
+      },
+      aspectRatio: {
+        '9/16': '9 / 16',
+      },
     },
   },
   plugins: [

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faCamera } from '@fortawesome/free-solid-svg-icons';
 import BaseCamera from '@/components/BaseCamera.vue';
@@ -9,6 +9,14 @@ const frontCameraBase64 = ref(null);
 const backCameraBase64 = ref(null);
 
 const cameras = ref([]);
+
+const getFacingMode = computed(() =>
+  frontCameraBase64.value ? 'environment' : 'user',
+);
+
+const displayTakenPicture = computed(
+  () => !frontCameraBase64.value || !backCameraBase64.value,
+);
 
 onMounted(async () => {
   const devices = await camera.value?.devices();
@@ -25,44 +33,44 @@ const snapshot = async () => {
     };
   });
 
-  if (camera.value?.facingMode === 'user') {
+  if (getFacingMode.value === 'user') {
     frontCameraBase64.value = base64;
+    camera.value.changeFacingMode('environment');
   } else {
     backCameraBase64.value = base64;
+    camera.value.pause();
+    sendPublication();
   }
 };
 
-const switchCamera = async deviceID => {
-  const currentDeviceID = await camera.value?.currentDeviceID();
-  console.log('Current device ID:', currentDeviceID);
-  console.log('Switching to device ID:', deviceID);
-
-  await camera.value?.changeCamera(deviceID);
+const sendPublication = () => {
+  // Send the base64 images to the server
+  // ...
 };
 </script>
 
 <template>
   <main class="max-h-screen overflow-hidden">
-    <select
-      class="select select-bordered w-full max-w-xs"
-      @change="switchCamera($event.target.value)"
+    <div
+      class="aspect-9/16 absolute z-10 ml-4 mt-4 h-48 rounded-lg bg-white shadow-lg"
+      v-if="frontCameraBase64"
     >
-      <option
-        v-for="camera in cameras"
-        :key="camera.deviceId"
-        :value="camera.deviceId"
-      >
-        {{ camera.label }}
-      </option>
-    </select>
+      <img
+        class="h-full w-full scale-x-[-1] transform rounded-lg object-cover"
+        :src="frontCameraBase64"
+      />
+    </div>
     <BaseCamera
       :resolution="{ width: 1080, height: 1920 }"
+      :facingMode="getFacingMode"
       ref="camera"
+      class="aspect-9/16 h-full w-full"
       autoplay
     />
     <button
+      v-if="displayTakenPicture"
       id="take-picture"
-      class="btn btn-lg btn-circle btn-outline"
+      class="btn btn-circle btn-outline btn-lg"
       @click="snapshot()"
     >
       <FontAwesomeIcon :icon="faCamera" />
@@ -80,4 +88,3 @@ const switchCamera = async deviceID => {
   transform: translateX(-50%);
 }
 </style>
-<style></style>
