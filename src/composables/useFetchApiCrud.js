@@ -67,12 +67,23 @@ export function useFetchApiCrud(path, baseUrl = null, additionalHeaders = {}) {
     });
   }
 
+  function updateFull(id, data, headers = {}, timeout = 5000) {
+    return fetchApiToRef({
+      url: `${path}/${id}`,
+      data,
+      method: 'PUT',
+      headers,
+      timeout,
+    });
+  }
+
   return {
     read,
     readAll,
     create,
     del,
     update,
+    updateFull,
     fetchApiToRef
   };
 }
