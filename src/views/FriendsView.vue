@@ -14,7 +14,7 @@ const authorisationHeader = {
 };
 
 const content = ref(0);
-const search = ref('');
+const search = ref(''); //TODO: Implement search functionality
 
 const page = ref([1, 1]);
 const pageSize = ref([5, 5]);
