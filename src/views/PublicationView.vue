@@ -7,19 +7,20 @@ const route = useRoute();
 
 const { read } = useFetchApiCrud(import.meta.env.VITE_API_URL);
 
-const { data, error, loading } = read(`/publications/${route.params.id}`, {Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NzYwMjM1YTdlMzRkZDU5MGU1Y2RmNWMiLCJleHAiOjE3MzQ5NTg2NjYsInNjb3BlIjoidXNlciIsImlhdCI6MTczNDM1Mzg2Nn0.5ec_9nwERk9Z7m1Si0Nq_62NMYT0xUG334xhU3KQsOg"});
-
-
-onBeforeRouteUpdate(async(to, from) => {
-  console.log('onBeforeRouteUpdate', to.params.id);
+const { data, error, loading } = read(`/publications/${route.params.id}`, {
+  Authorization:
+    'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NzYwNWQ5MmFhOTI5ZDY0ODNkZDBhZjEiLCJleHAiOjE3MzQ5NzM0NjYsInNjb3BlIjoiYWRtaW4iLCJpYXQiOjE3MzQzNjg2NjZ9.SVYDwOQUfZGvqtIT6fdmyqflTa73GxlrOZtQc0cVYtk',
 });
 
+onBeforeRouteUpdate(async (to, from) => {
+  console.log('onBeforeRouteUpdate', to.params.id);
+});
 </script>
 
 <template>
   <main class="max-h-screen overflow-y-scroll">
     <div>BeReal - Home</div>
-    
+
     {{ data }}
   </main>
 </template>
