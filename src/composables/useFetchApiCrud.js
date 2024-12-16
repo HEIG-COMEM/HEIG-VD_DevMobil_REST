@@ -29,9 +29,9 @@ export function useFetchApiCrud(path, baseUrl = null, additionalHeaders = {}) {
     });
   }
 
-  function readAll(headers = {}, timeout = 5000) {
+  function readAll(query = null, headers = {}, timeout = 5000) {
     return fetchApiToRef({
-      url: path,
+      url: `${path}${query ? `?${query}` : ''}`,
       method: 'GET',
       headers,
       timeout,
