@@ -11,9 +11,11 @@ const props = defineProps({
 const formatedDate = computed(() => {
   const date = new Date(props.publication.createdAt);
 
-  return date.toDateString() === new Date().toDateString() ? `Aujourd'hui à ${date.toLocaleTimeString()}` : `Il y a ${Math.floor(
-      (new Date() - date) / (1000 * 60 * 60 * 24)
-    )} jours à ${date.toLocaleTimeString()}`;
+  return date.toDateString() === new Date().toDateString()
+    ? `Aujourd'hui à ${date.toLocaleTimeString()}`
+    : `Il y a ${Math.floor(
+        (new Date() - date) / (1000 * 60 * 60 * 24),
+      )} jours à ${date.toLocaleTimeString()}`;
 });
 
 const locality = ref('');
@@ -23,8 +25,8 @@ const getFormatedLocation = () => {
   const url = `https://api-bdc.net/data/reverse-geocode-client?latitude=${lat}&longitude=${long}&localityLanguage=fr`;
 
   fetch(url)
-    .then((response) => response.json())
-    .then((data) => {
+    .then(response => response.json())
+    .then(data => {
       locality.value = data.locality;
     });
 };
@@ -49,7 +51,6 @@ const smallCamera = computed(() => {
     ? props.publication.backCamera.url
     : props.publication.frontCamera.url;
 });
-
 </script>
 
 <template>
@@ -68,15 +69,22 @@ const smallCamera = computed(() => {
         @click="toggleCamera()"
       >
         <img
-          class="h-full w-full rounded-lg object-cover border border-black"
+          class="h-full w-full rounded-lg border border-black object-cover"
           :src="smallCamera"
           alt="publication"
         />
       </div>
-      <img class="w-full rounded-lg object-cover" :src="bigCamera" alt="publication" />
+      <img
+        class="w-full rounded-lg object-cover"
+        :src="bigCamera"
+        alt="publication"
+      />
 
       <RouterLink :to="`/publications/${publication._id}`">
-        <FontAwesomeIcon class="absolute h-6 w-6 bottom-4 right-4 rounded-full drop-shadow-lg" :icon="faComment" />
+        <FontAwesomeIcon
+          class="absolute bottom-4 right-4 h-6 w-6 rounded-full drop-shadow-lg"
+          :icon="faComment"
+        />
       </RouterLink>
     </div>
   </div>

@@ -38,7 +38,7 @@ const router = createRouter({
       path: '/publications/:id',
       name: 'publication',
       component: PublicationView,
-    }
+    },
   ],
 });
 

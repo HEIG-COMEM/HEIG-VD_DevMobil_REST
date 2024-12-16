@@ -91,7 +91,7 @@ export function useFetchApi(baseUrl = null, additionalHeaders = {}) {
               } else {
                 resolve({ data, headers });
               }
-            })
+            });
         })
         .catch(err => {
           clearTimeout(timer);
