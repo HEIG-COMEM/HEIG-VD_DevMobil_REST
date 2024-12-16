@@ -1,0 +1,30 @@
+<script setup>
+import { useFetchApiCrud } from '@/composables/useFetchApiCrud';
+
+import { useRoute, onBeforeRouteUpdate } from 'vue-router';
+
+const route = useRoute();
+
+const { read } = useFetchApiCrud(import.meta.env.VITE_API_URL);
+
+const { data, error, loading } = read(`/publications/${route.params.id}`, {Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NzYwMjM1YTdlMzRkZDU5MGU1Y2RmNWMiLCJleHAiOjE3MzQ5NTg2NjYsInNjb3BlIjoidXNlciIsImlhdCI6MTczNDM1Mzg2Nn0.5ec_9nwERk9Z7m1Si0Nq_62NMYT0xUG334xhU3KQsOg"});
+
+
+onBeforeRouteUpdate(async(to, from) => {
+  console.log('onBeforeRouteUpdate', to.params.id);
+});
+
+</script>
+
+<template>
+  <main class="max-h-screen overflow-y-scroll">
+    <div>BeReal - Home</div>
+    
+    {{ data }}
+  </main>
+</template>
+<style>
+* {
+  color: white;
+}
+</style>
