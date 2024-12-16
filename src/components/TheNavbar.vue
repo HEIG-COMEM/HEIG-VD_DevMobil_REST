@@ -20,7 +20,7 @@ import {
         /></RouterLink>
       </li>
       <li>
-        <RouterLink to="/">
+        <RouterLink to="/friends">
           <FontAwesomeIcon :icon="faUserGroup" />
         </RouterLink>
       </li>

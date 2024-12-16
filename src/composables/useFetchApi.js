@@ -71,8 +71,13 @@ export function useFetchApi(baseUrl = null, additionalHeaders = {}) {
         headers: allHeaders,
         body: data != null ? JSON.stringify(data) : null,
       })
-        .then(res =>
-          res
+        .then(res => {
+          const headers = {};
+          res.headers.forEach((value, key) => {
+            headers[key] = value;
+          });
+
+          return res
             .json()
             .catch(() => null)
             .then(data => {
@@ -84,10 +89,10 @@ export function useFetchApi(baseUrl = null, additionalHeaders = {}) {
                   data,
                 });
               } else {
-                resolve(data);
+                resolve({ data, headers });
               }
-            }),
-        )
+            })
+        })
         .catch(err => {
           clearTimeout(timer);
           reject({
@@ -115,12 +120,14 @@ export function useFetchApi(baseUrl = null, additionalHeaders = {}) {
    */
   function fetchApiToRef(options) {
     const data = ref(null);
+    const headers = ref(null);
     const error = ref(null);
     const loading = ref(true);
 
     fetchApi(options)
       .then(res => {
-        data.value = res;
+        data.value = res.data;
+        headers.value = res.headers;
         loading.value = false;
       })
       .catch(err => {
@@ -128,7 +135,7 @@ export function useFetchApi(baseUrl = null, additionalHeaders = {}) {
         loading.value = false;
       });
 
-    return { data, error, loading };
+    return { data, headers, error, loading };
   }
 
   return { fetchApi, fetchApiToRef };
