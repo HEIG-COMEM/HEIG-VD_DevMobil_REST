@@ -8,8 +8,11 @@ const { readAll } = useFetchApiCrud(
   import.meta.env.VITE_API_URL,
 );
 
+/**
+ * DEBUG: This is a mock authorisation header.
+ */
 const authorizationHeader = {
-  Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NzYwNWQ5MmFhOTI5ZDY0ODNkZDBhZjEiLCJleHAiOjE3MzQ5NzM0NjYsInNjb3BlIjoiYWRtaW4iLCJpYXQiOjE3MzQzNjg2NjZ9.SVYDwOQUfZGvqtIT6fdmyqflTa73GxlrOZtQc0cVYtk`,
+  Authorization: `Bearer ${import.meta.env.VITE_DEBUG_TOKEN}`,
 };
 
 const { data, error, loading } = readAll(null, authorizationHeader);

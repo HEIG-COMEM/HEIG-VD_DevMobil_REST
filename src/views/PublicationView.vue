@@ -8,8 +8,7 @@ const route = useRoute();
 const { read } = useFetchApiCrud(import.meta.env.VITE_API_URL);
 
 const { data, error, loading } = read(`/publications/${route.params.id}`, {
-  Authorization:
-    'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NzYwNWQ5MmFhOTI5ZDY0ODNkZDBhZjEiLCJleHAiOjE3MzQ5NzM0NjYsInNjb3BlIjoiYWRtaW4iLCJpYXQiOjE3MzQzNjg2NjZ9.SVYDwOQUfZGvqtIT6fdmyqflTa73GxlrOZtQc0cVYtk',
+  Authorization: `Bearer ${import.meta.env.VITE_DEBUG_TOKEN}`,
 });
 
 onBeforeRouteUpdate(async (to, from) => {
