@@ -43,7 +43,7 @@ const register = () => {
       }).then(data => {
         const res = userStore.setToken(data.token);
         if (res) {
-          router.push({ name: 'home' });
+          router.replace({ name: 'home', query: { registered: true } });
         }
       });
     })

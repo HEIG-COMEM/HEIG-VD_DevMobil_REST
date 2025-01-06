@@ -28,7 +28,7 @@ const login = () => {
     .then(response => {
       const res = userStore.setToken(response.data.token);
       if (res) {
-        router.push({ name: 'home' });
+        router.replace({ name: 'home', query: { loggedIn: true } });
       }
     })
     .catch(() => (error.value = 'Invalid email or password'))
