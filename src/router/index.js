@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import { useUserStore } from '@/stores/userStore';
 import HomeView from '@/views/HomeView.vue';
 import LoginView from '@/views/LoginView.vue';
 import RegisterView from '@/views/RegisterView.vue';
@@ -47,5 +48,14 @@ const router = createRouter({
     }
   ],
 });
+
+/**
+ * Middleware to check if the user is authenticated
+ * before navigating to any route other than login and register
+ */
+router.beforeEach((to, from, next) => {
+  if ((to.name !== 'login' && to.name !== 'register') && !useUserStore().isAuthenticated) next({ name: 'login' })
+  else next()
+})
 
 export default router;

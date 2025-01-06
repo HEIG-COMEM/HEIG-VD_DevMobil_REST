@@ -1,18 +1,18 @@
 <script setup>
 import AppPublicationCard from '@/components/AppPublicationCard.vue';
 import { useFetchApiCrud } from '@/composables/useFetchApiCrud';
+import { useUserStore } from '@/stores/userStore';
 import { ref } from 'vue';
+
+const userStore = useUserStore();
 
 const { readAll } = useFetchApiCrud(
   '/publications',
   import.meta.env.VITE_API_URL,
 );
 
-/**
- * DEBUG: This is a mock authorisation header.
- */
 const authorizationHeader = {
-  Authorization: `Bearer ${import.meta.env.VITE_DEBUG_TOKEN}`,
+  Authorization: `Bearer ${userStore.getToken}`,
 };
 
 const { data, error, loading } = readAll(null, authorizationHeader);

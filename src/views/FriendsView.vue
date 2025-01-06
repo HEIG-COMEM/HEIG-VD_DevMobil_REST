@@ -2,9 +2,12 @@
 import { ref, computed, watch } from 'vue';
 import { debounce } from '@/utils/debounce';
 import { useFetchApiCrud } from '@/composables/useFetchApiCrud';
+import { useUserStore } from '@/stores/userStore';
 import AppFriendCard from '@/components/AppFriendCard.vue';
 import AppSearchBar from '@/components/AppSearchBar.vue';
 import { onMounted } from 'vue';
+
+const userStore = useUserStore();
 
 const { readAll, del, update } = useFetchApiCrud(
   '/friends',
@@ -16,11 +19,8 @@ const { readAll: readAllUsers } = useFetchApiCrud(
   import.meta.env.VITE_API_URL,
 );
 
-/**
- * DEBUG: This is a mock authorisation header.
- */
 const authorisationHeader = {
-  Authorization: `Bearer ${import.meta.env.VITE_DEBUG_TOKEN}`,
+  Authorization: `Bearer ${userStore.getToken}`,
 };
 
 const content = ref(0);

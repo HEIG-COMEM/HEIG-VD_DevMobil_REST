@@ -1,10 +1,6 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router';
-import { useUserStore } from '@/stores/userStore';
-
+import { RouterView } from 'vue-router';
 import MobileLayout from '@/layouts/MobileLayout.vue';
-
-const userStore = useUserStore();
 </script>
 
 <template>
