@@ -2,7 +2,7 @@
 import AppProfilePicture from './AppProfilePicture.vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faComment } from '@fortawesome/free-solid-svg-icons';
-import { defineProps, computed, ref, onMounted } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 
 const props = defineProps({
   publication: Object,
