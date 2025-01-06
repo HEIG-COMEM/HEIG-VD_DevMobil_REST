@@ -1,14 +1,15 @@
 <script setup>
 import { useFetchApiCrud } from '@/composables/useFetchApiCrud';
-
+import { useUserStore } from '@/stores/userStore';
 import { useRoute, onBeforeRouteUpdate } from 'vue-router';
 
 const route = useRoute();
+const userStore = useUserStore();
 
 const { read } = useFetchApiCrud(import.meta.env.VITE_API_URL);
 
 const { data, error, loading } = read(`/publications/${route.params.id}`, {
-  Authorization: `Bearer ${import.meta.env.VITE_DEBUG_TOKEN}`,
+  Authorization: `Bearer ${userStore.getToken}`,
 });
 
 onBeforeRouteUpdate(async (to, from) => {

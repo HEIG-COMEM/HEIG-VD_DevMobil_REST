@@ -1,23 +1,31 @@
 <script setup>
 import { ref, computed, watch } from 'vue';
+import { debounce } from '@/utils/debounce';
 import { useFetchApiCrud } from '@/composables/useFetchApiCrud';
+import { useUserStore } from '@/stores/userStore';
 import AppFriendCard from '@/components/AppFriendCard.vue';
 import AppSearchBar from '@/components/AppSearchBar.vue';
+import { onMounted } from 'vue';
+
+const userStore = useUserStore();
 
 const { readAll, del, update } = useFetchApiCrud(
   '/friends',
   import.meta.env.VITE_API_URL,
 );
 
-/**
- * DEBUG: This is a mock authorisation header.
- */
+const { readAll: readAllUsers } = useFetchApiCrud(
+  '/users',
+  import.meta.env.VITE_API_URL,
+);
+
 const authorisationHeader = {
-  Authorization: `Bearer ${import.meta.env.VITE_DEBUG_TOKEN}`,
+  Authorization: `Bearer ${userStore.getToken}`,
 };
 
 const content = ref(0);
 const search = ref(''); //TODO: Implement search functionality
+const searchResults = ref([]);
 
 const page = ref([1, 1]);
 const pageSize = ref([5, 5]);
@@ -53,6 +61,18 @@ const fetchPendingFriends = () => {
   watch(response.headers, v => (respHeaders.value[1] = v));
 };
 
+const fetchSearchUsers = query => {
+  if (!query) {
+    content.value = 0;
+    searchResults.value = [];
+    return;
+  }
+  const response = readAllUsers(`search=${query}`, authorisationHeader);
+  watch(response.data, v => (searchResults.value = v));
+};
+
+watch(search, debounce(fetchSearchUsers, 500));
+
 const deleteFriend = friendshipId => {
   const response = del(friendshipId, authorisationHeader);
   watch(response.headers, () => fetchFriends());
@@ -85,6 +105,12 @@ const hasPrevPage = computed(() => [page.value[0] > 1, page.value[1] > 1]);
 
 fetchFriends();
 fetchPendingFriends();
+
+onMounted(() => {
+  const searchInput = document.querySelector('#search input');
+
+  searchInput.addEventListener('focus', () => (content.value = 2));
+});
 </script>
 
 <template>
@@ -93,6 +119,7 @@ fetchPendingFriends();
       placeholder="Ajouter ou rechercher des amis"
       class="mb-8"
       v-model="search"
+      id="search"
     />
     <template v-if="content === 0">
       <p class="mb-2 text-sm uppercase text-neutral-content">
@@ -141,6 +168,21 @@ fetchPendingFriends();
       </div>
       <p v-else class="my-12 text-center text-sm text-neutral-content">
         Vous n'avez pas de demandes d'amis en attente.
+      </p>
+    </template>
+    <template v-if="content === 2">
+      <p class="mb-2 text-sm uppercase text-neutral-content">
+        Rechercher des amis
+      </p>
+      <div class="flex flex-col gap-2" v-if="searchResults?.length">
+        <AppFriendCard
+          v-for="user in searchResults"
+          :key="user._id"
+          :friend="user"
+        />
+      </div>
+      <p v-else class="my-12 text-center text-sm text-neutral-content">
+        Aucun utilisateur trouvé.
       </p>
     </template>
 
