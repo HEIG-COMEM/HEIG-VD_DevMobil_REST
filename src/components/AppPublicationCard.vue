@@ -58,7 +58,11 @@ const smallCamera = computed(() => {
     <div class="flex flex-row content-center justify-between gap-2 p-2">
       <AppProfilePicture :photo="publication.user.photo" />
       <div class="flex-grow">
-        <p class="text-sm font-bold">{{ publication.user.name }}</p>
+        <RouterLink
+          :to="`/users/${publication.user._id}`"
+          class="text-sm font-bold"
+          >{{ publication.user.name }}</RouterLink
+        >
         <p class="text-xs text-gray-500">{{ locality }}, {{ formatedDate }}</p>
       </div>
       <div>...</div>
