@@ -8,11 +8,11 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 const alert = ref('');
 if (router.currentRoute.value.query.loggedIn) {
-  alert.value = 'You have successfully logged in';
+  alert.value = 'Connexion réussie';
   router.replace({ query: {} });
 }
 if (router.currentRoute.value.query.registered) {
-  alert.value = 'You have successfully registered';
+  alert.value = 'Inscription réussie';
   router.replace({ query: {} });
 }
 

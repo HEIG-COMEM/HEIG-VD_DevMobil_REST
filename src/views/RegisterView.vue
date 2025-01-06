@@ -76,7 +76,7 @@ const register = () => {
     @submit.prevent="register()"
     class="prose flex h-[80vh] flex-col justify-center gap-12"
   >
-    <h1 class="text-center">Register</h1>
+    <h1 class="text-center">Enregistrement</h1>
     <div class="flex flex-col gap-4">
       <label class="input input-bordered flex items-center gap-2">
         <svg
@@ -89,7 +89,7 @@ const register = () => {
             d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z"
           />
         </svg>
-        <input type="text" class="grow" placeholder="Name" v-model="name" />
+        <input type="text" class="grow" placeholder="Nom" v-model="name" />
       </label>
       <label class="input input-bordered flex items-center gap-2">
         <svg
@@ -123,18 +123,17 @@ const register = () => {
         <input
           type="password"
           class="grow"
-          value="password"
           v-model="password"
-          placeholder="Password"
+          placeholder="Mot de passe"
         />
       </label>
     </div>
-    <button class="btn btn-primary" type="submit">Register</button>
+    <button class="btn btn-primary" type="submit">S'inscrire</button>
   </form>
 
   <p class="w-full text-center">
-    Already have an account ?
-    <router-link class="link link-accent" to="/login">Login</router-link>
+    Vous avez déjà un compte ?
+    <router-link class="link link-accent" to="/login">Connexion</router-link>
   </p>
 </template>
 

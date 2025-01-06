@@ -31,7 +31,7 @@ const login = () => {
         router.replace({ name: 'home', query: { loggedIn: true } });
       }
     })
-    .catch(() => (error.value = 'Invalid email or password'))
+    .catch(() => (error.value = 'Email ou mot de passe incorrect'))
     .finally(() => (isLoading.value = false));
 };
 </script>
@@ -60,7 +60,7 @@ const login = () => {
     @submit.prevent="login()"
     class="prose flex h-[80vh] flex-col justify-center gap-12"
   >
-    <h1 class="text-center">Login</h1>
+    <h1 class="text-center">Connexion</h1>
     <div class="flex flex-col gap-4">
       <label class="input input-bordered flex items-center gap-2">
         <svg
@@ -94,18 +94,19 @@ const login = () => {
         <input
           type="password"
           class="grow"
-          value="password"
           v-model="password"
-          placeholder="Password"
+          placeholder="Mot de passe"
         />
       </label>
     </div>
-    <button class="btn btn-primary" type="submit">Login</button>
+    <button class="btn btn-primary" type="submit">Connexion</button>
   </form>
 
   <p class="w-full text-center">
-    Don't have an account ?
-    <router-link class="link link-accent" to="/register">Register</router-link>
+    Vous n'avez pas de compte ?
+    <router-link class="link link-accent" to="/register"
+      >Inscrivez-vous</router-link
+    >
   </p>
 </template>
 
