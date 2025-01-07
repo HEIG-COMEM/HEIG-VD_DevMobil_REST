@@ -34,10 +34,12 @@ const gotoProfile = () =>
   <div class="flex cursor-pointer flex-row items-center gap-5">
     <AppProfilePicture
       :photo="friend.profilePicture.url"
-      class="!h-14"
+      class="!h-14 cursor-pointer"
       @click="gotoProfile()"
     />
-    <p class="flex-grow" @click="gotoProfile()">{{ friend.name }}</p>
+    <p class="flex-grow cursor-pointer" @click="gotoProfile()">
+      {{ friend.name }}
+    </p>
     <div class="flex flex-row gap-4" v-if="!options.includes('none')">
       <FontAwesomeIcon
         :icon="faCheck"

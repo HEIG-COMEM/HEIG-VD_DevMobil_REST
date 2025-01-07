@@ -32,6 +32,7 @@ watchEffect(() => {
 
 <template>
   <AppPublicProfile :profile :stats />
+  <!-- TODO: Display 3 latest publication of the user if the viewer is friend otherwise show a button to create a friendship -->
 </template>
 
 <style scoped></style>
