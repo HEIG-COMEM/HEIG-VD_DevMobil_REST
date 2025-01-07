@@ -56,7 +56,7 @@ const smallCamera = computed(() => {
 <template>
   <div class="p-1">
     <div class="flex flex-row content-center justify-between gap-2 p-2">
-      <AppProfilePicture :photo="publication.user.photo" />
+      <AppProfilePicture :photo="publication.user.profilePicture.url" />
       <div class="flex-grow">
         <RouterLink
           :to="`/users/${publication.user._id}`"
