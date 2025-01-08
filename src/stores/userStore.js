@@ -20,6 +20,7 @@ export const useUserStore = defineStore('user', () => {
       const data = response.data;
 
       user.value = {
+        id: data._id,
         email: data.email,
         name: data.name,
         role: data.role,
