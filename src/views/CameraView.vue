@@ -50,7 +50,7 @@ const sendPublication = () => {
 </script>
 
 <template>
-  <main class="max-h-screen overflow-hidden">
+  <main class="max-h-screen h-full overflow-hidden">
     <div
       class="aspect-9/16 absolute z-10 ml-4 mt-4 h-48 rounded-lg bg-white shadow-lg"
       v-if="frontCameraBase64"
@@ -61,10 +61,9 @@ const sendPublication = () => {
       />
     </div>
     <BaseCamera
-      :resolution="{ width: 1080, height: 1920 }"
+      :resolution="{ width: 1500, height: 2000 }"
       :facingMode="getFacingMode"
       ref="camera"
-      class="aspect-9/16 h-full w-full"
       autoplay
     />
     <button
