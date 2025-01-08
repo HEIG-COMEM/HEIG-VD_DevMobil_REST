@@ -45,7 +45,7 @@ const router = createRouter({
       path: '/users/:id',
       name: 'user',
       component: ProfileView,
-    }
+    },
   ],
 });
 
@@ -54,8 +54,13 @@ const router = createRouter({
  * before navigating to any route other than login and register
  */
 router.beforeEach((to, from, next) => {
-  if ((to.name !== 'login' && to.name !== 'register') && !useUserStore().isAuthenticated) next({ name: 'login' })
-  else next()
-})
+  if (
+    to.name !== 'login' &&
+    to.name !== 'register' &&
+    !useUserStore().isAuthenticated
+  )
+    next({ name: 'login' });
+  else next();
+});
 
 export default router;
