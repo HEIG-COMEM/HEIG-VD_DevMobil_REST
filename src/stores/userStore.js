@@ -62,9 +62,12 @@ export const useUserStore = defineStore('user', () => {
     localStorage.removeItem('bereal_token');
   };
 
+  const refreshUser = async () => await fetchUserData();
+
   return {
     setToken,
     getToken,
+    refreshUser,
     getUser,
     isAuthenticated,
     logout,
