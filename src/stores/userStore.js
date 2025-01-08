@@ -8,7 +8,10 @@ export const useUserStore = defineStore('user', () => {
   const user = ref(null);
   const token = ref(null);
 
-  const setToken = newToken => {
+  const getUser = computed(() => user.value);
+  const getToken = computed(() => token.value);
+
+  function setToken(newToken) {
     token.value = newToken;
     user.value = null;
 
@@ -19,27 +22,23 @@ export const useUserStore = defineStore('user', () => {
         Authorization: `Bearer ${token.value}`,
       },
     })
-      .then(response => {
-        console.log(response);
-        console.log(response.email);
+    .then(response => {
+      console.log(response);
+      console.log(response.email);
 
-        user.value = {
-          email: response.email,
-          name: response.name,
-          role: response.role,
-          profilePictureUrl: response.profilePictureUrl,
-        };
-      })
-      .catch(error => {
-        console.error(error);
-      });
-
-    return true;
+      user.value = {
+        email: response.email,
+        name: response.name,
+        role: response.role,
+        profilePictureUrl: response.profilePictureUrl,
+      };
+    })
+    .catch(error => {
+      console.error(error);
+    });
   };
 
-  const getUser = computed(() => user.value);
-
-  const logout = () => {
+  function logout() {
     user.value = null;
     token.value = null;
   };
@@ -49,6 +48,7 @@ export const useUserStore = defineStore('user', () => {
     token,
     setToken,
     getUser,
+    getToken,
     logout,
   };
 });
