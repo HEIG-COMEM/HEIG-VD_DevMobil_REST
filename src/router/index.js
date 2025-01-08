@@ -7,6 +7,7 @@ import CameraView from '@/views/CameraView.vue';
 import FriendsView from '@/views/FriendsView.vue';
 import PublicationView from '@/views/PublicationView.vue';
 import PublicProfileView from '@/views/PublicProfileView.vue';
+import PrivateProfileView from '@/views/PrivateProfileView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -46,6 +47,11 @@ const router = createRouter({
       name: 'user',
       component: PublicProfileView,
     },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: PrivateProfileView,
+    }
   ],
 });
 

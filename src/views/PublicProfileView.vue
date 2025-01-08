@@ -1,17 +1,24 @@
 <script setup>
 import { ref, watchEffect, computed } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useFetchApiCrud } from '@/composables/useFetchApiCrud';
 import { useUserStore } from '@/stores/userStore';
 import AppPublicProfile from '@/components/AppPublicProfile.vue';
-const userStore = useUserStore();
 
+const userStore = useUserStore();
+const router = useRouter();
 const route = useRoute();
+
 const id = route.params.id;
 const profile = ref(null);
 const stats = ref(null);
 const lastPublications = ref(null);
 const isFriend = computed(() => profile.value?.isFriend);
+
+watchEffect(() => {
+  if (!userStore.getUser) return;
+  if (userStore.getUser.id === id) router.push('/profile');
+});
 
 const authorisationHeader = {
   Authorization: `Bearer ${userStore.getToken}`,
