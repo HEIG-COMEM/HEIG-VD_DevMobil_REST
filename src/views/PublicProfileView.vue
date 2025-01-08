@@ -58,7 +58,6 @@ watchEffect(() => {
 
 <template>
   <main class="max-h-screen overflow-y-scroll">
-    {{ userStore.getUser }}
     <AppPublicProfile :profile :stats />
     <p class="mt-12 text-xl font-bold">BeReal récents :</p>
     <template v-if="isFriend">

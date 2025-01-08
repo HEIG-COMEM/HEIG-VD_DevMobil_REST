@@ -52,27 +52,29 @@ const updateAccount = () => {
     },
     body: formData,
   })
-    .then(response => response.json())
+    .then(response => {
+      response.json();
+    })
     .then(data => {
       user.value = data;
       name.value = data.name;
       email.value = data.email;
 
-      userStore.refreshUser();
       success.value = 'Votre compte a été mis à jour';
-
-      password.value = null;
-      passwordConfirmation.value = null;
 
       setTimeout(() => {
         success.value = null;
       }, 2000);
     })
-    .catch(
-      error =>
-        (error.value =
-          'Une erreur est survenue lors de la mise à jour de votre compte'),
-    );
+    .catch(() => {
+      error.value =
+        'Une erreur est survenue lors de la mise à jour de votre compte';
+    })
+    .finally(() => {
+      password.value = null;
+      passwordConfirmation.value = null;
+      userStore.refreshUser();
+    });
 };
 
 fetch(`/api/auth/user`, {
