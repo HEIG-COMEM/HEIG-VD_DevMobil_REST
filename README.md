@@ -2,6 +2,8 @@
 
 Front end for the REST API project of the DévMobil and ArchiOWeb courses at HEIG-VD.
 
+The backend code for this project can be found at [HEIG-COMEM/HEIG-VD_ArchiOWeb_REST](https://github.com/HEIG-COMEM/HEIG-VD_ArchiOWeb_REST)
+
 ## Introduction
 
 This project involves a partial recoding of the BeReal application, a social platform that prioritizes authenticity. BeReal prompts users to share unfiltered, genuine photos at a random time each day. Its standout feature is the inability to retouch photos or apply filters.
