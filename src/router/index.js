@@ -26,6 +26,7 @@ const router = createRouter({
       path: '/camera',
       name: 'camera',
       component: CameraView,
+      meta: { hideNavbar: true }, // Navbar masquée
     }
   ],
 });
