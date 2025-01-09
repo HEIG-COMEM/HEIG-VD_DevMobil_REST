@@ -1,5 +1,6 @@
 <script setup>
 import TheNavbar from '@/components/TheNavbar.vue';
+import TheApiStatusIndicator from '@/components/TheApiStatusIndicator.vue';
 import { useRoute } from 'vue-router';
 import { ref, watch } from 'vue';
 
@@ -10,15 +11,16 @@ const hideNavbar = ref(route.meta.hideNavbar || false);
 // Mettre à jour hideNavbar à chaque changement de route
 watch(
   () => route.meta.hideNavbar,
-  (newValue) => {
+  newValue => {
     hideNavbar.value = newValue || false;
   },
-  { immediate: true }
+  { immediate: true },
 );
 </script>
 
 <template>
-  <div class="relative h-dvh w-full max-w-screen-sm">
+  <div class="relative h-dvh w-full max-w-screen-sm overflow-hidden">
+    <TheApiStatusIndicator />
     <slot></slot>
     <TheNavbar v-if="!hideNavbar" class="absolute bottom-0 left-0 w-full" />
   </div>
