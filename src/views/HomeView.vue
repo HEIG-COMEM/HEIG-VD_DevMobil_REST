@@ -37,16 +37,10 @@ const fetchPublications = async () => {
 };
 
 fetchPublications();
-
-if (alert.value) {
-  setTimeout(() => {
-    alert.value = '';
-  }, 2000);
-}
 </script>
 
 <template>
-  <main class="max-h-screen overflow-y-scroll">
+  <main class="max-h-screen overflow-y-scroll pb-28">
     <div>BeReal - Home</div>
 
     <BaseToast v-if="alert" :message="alert" type="success" />
