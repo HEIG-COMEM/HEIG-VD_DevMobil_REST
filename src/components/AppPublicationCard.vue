@@ -65,7 +65,6 @@ const smallCamera = computed(() => {
         >
         <p class="text-xs text-gray-500">{{ locality }}, {{ formatedDate }}</p>
       </div>
-      <div>...</div>
     </div>
     <div class="relative">
       <div
