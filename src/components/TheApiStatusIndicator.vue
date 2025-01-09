@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
 
-const isApiDown = ref(false);
+const isApiDown = ref(true);
 const signal = ref(null);
 
 onMounted(() => {
