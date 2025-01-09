@@ -1,9 +1,10 @@
 <script setup>
 import { ref, watchEffect, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { useFetchApiCrud } from '@/composables/useFetchApiCrud';
+import { useFetchApi } from '@/composables/useFetchApi';
 import { useUserStore } from '@/stores/userStore';
 import AppPublicProfile from '@/components/AppPublicProfile.vue';
+import BaseToast from '@/components/BaseToast.vue';
 
 const userStore = useUserStore();
 const router = useRouter();
@@ -15,70 +16,80 @@ const stats = ref(null);
 const lastPublications = ref(null);
 const isFriend = computed(() => profile.value?.isFriend);
 
+const error = ref(null);
+const success = ref(null);
+
+const resetStatus = () => {
+  error.value = null;
+  success.value = null;
+};
+
 watchEffect(() => {
   if (!userStore.getUser) return;
   if (userStore.getUser.id === id) router.push('/profile');
 });
 
-const authorisationHeader = {
+const { fetchApi } = useFetchApi(import.meta.env.VITE_API_URL, {
   Authorization: `Bearer ${userStore.getToken}`,
-};
-
-const { read } = useFetchApiCrud(`/users`, import.meta.env.VITE_API_URL);
-const { readAll } = useFetchApiCrud(
-  `/users/${id}/stats`,
-  import.meta.env.VITE_API_URL,
-);
-const getLastPublications = () => {
-  fetch(
-    `${import.meta.env.VITE_API_URL}/publications?page=1&limit=3&userId=${id}`,
-    {
-      headers: authorisationHeader,
-    },
-  )
-    .then(response => response.json())
-    .then(data => {
-      lastPublications.value = data;
-      if (data.length < 3) {
-        lastPublications.value = [
-          ...data,
-          ...Array(3 - data.length).fill(null),
-        ];
-      }
-    });
-};
-
-const profileResponse = read(id, authorisationHeader);
-const statsResponse = readAll(null, authorisationHeader);
-
-watchEffect(() => {
-  profile.value = profileResponse.data.value;
-  stats.value = statsResponse.data.value;
-
-  if (profile.value && profile.value.isFriend) getLastPublications();
 });
 
-const askFriend = () => {
-  fetch(`${import.meta.env.VITE_API_URL}/friends`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      ...authorisationHeader,
-    },
-    body: JSON.stringify({ friendId: id }),
-  })
-    .then(response => response.json())
-    .then(data => console.log(data))
-    .catch(error => {
-      console.log(error);
-
-      console.error(error);
+const getLastPublications = async () => {
+  try {
+    const { data } = await fetchApi({
+      url: `/publications?page=1&limit=3&userId=${id}`,
+      method: 'GET',
     });
+    lastPublications.value = data;
+    if (data.length < 3) {
+      lastPublications.value = [...data, ...Array(3 - data.length).fill(null)];
+    }
+  } catch (err) {
+    console.log(err);
+    error.value =
+      'Une erreur est survenue lors de la récupération des publications';
+  }
+};
+
+const fetchProfileAndStats = async () => {
+  resetStatus();
+  try {
+    const [profileResponse, statsResponse] = await Promise.all([
+      fetchApi({ url: `/users/${id}` }),
+      fetchApi({ url: `/users/${id}/stats` }),
+    ]);
+
+    profile.value = profileResponse.data;
+    stats.value = statsResponse.data;
+  } catch (err) {
+    console.log(err);
+    error.value = 'Une erreur est survenue lors de la récupération du profil';
+  }
+
+  if (profile.value.isFriend) getLastPublications();
+};
+fetchProfileAndStats();
+
+const askFriend = async () => {
+  resetStatus();
+  try {
+    await fetchApi({
+      url: `/friends`,
+      method: 'POST',
+      data: { friendId: id },
+    });
+    success.value = "La demande d'ami a bien été envoyée";
+  } catch (err) {
+    console.log(err);
+    error.value = "Une erreur est survenue lors de l'ajout de l'ami";
+  }
 };
 </script>
 
 <template>
   <main class="max-h-screen overflow-y-scroll">
+    <BaseToast v-if="error" :message="error" type="error" />
+    <BaseToast v-if="success" :message="success" type="success" />
+
     <AppPublicProfile :profile :stats />
     <p class="mt-12 text-xl font-bold">BeReal récents :</p>
     <template v-if="isFriend">

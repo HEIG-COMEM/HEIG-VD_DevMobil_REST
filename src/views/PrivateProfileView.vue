@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useUserStore } from '@/stores/userStore';
+import { useFetchApi } from '@/composables/useFetchApi';
 import BaseToast from '@/components/BaseToast.vue';
 
 const userStore = useUserStore();
@@ -21,9 +22,9 @@ const profilePictureUrl = computed(() => {
 const error = ref(null);
 const success = ref(null);
 
-const authorisationHeader = {
+const { fetchApi } = useFetchApi(import.meta.env.VITE_API_URL, {
   Authorization: `Bearer ${userStore.getToken}`,
-};
+});
 
 const handleFileUpload = event => {
   const file = event.target.files[0];
@@ -49,23 +50,15 @@ const updateAccount = () => {
   fetch(`${import.meta.env.VITE_API_URL}/users/${user.value._id}`, {
     method: 'PATCH',
     headers: {
-      ...authorisationHeader,
+      Authorization: `Bearer ${userStore.getToken}`,
     },
     body: formData,
   })
     .then(response => {
       response.json();
     })
-    .then(data => {
-      user.value = data;
-      name.value = data.name;
-      email.value = data.email;
-
+    .then(() => {
       success.value = 'Votre compte a été mis à jour';
-
-      setTimeout(() => {
-        success.value = null;
-      }, 2000);
     })
     .catch(() => {
       error.value =
@@ -78,15 +71,14 @@ const updateAccount = () => {
     });
 };
 
-fetch(`${import.meta.env.VITE_API_URL}/auth/user`, {
-  headers: authorisationHeader,
-})
-  .then(response => response.json())
-  .then(data => {
-    user.value = data;
-    name.value = data.name;
-    email.value = data.email;
-  });
+const fetchUser = async () => {
+  const { data } = await fetchApi({ url: 'auth/user' });
+
+  user.value = data;
+  name.value = data.name;
+  email.value = data.email;
+};
+fetchUser();
 </script>
 
 <template>

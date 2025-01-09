@@ -27,7 +27,7 @@ setTimeout(() => {
 </script>
 
 <template>
-  <div class="toast toast-center toast-top">
+  <div class="toast toast-center toast-top z-50">
     <div class="alert" :class="classe">
       <span>{{ message }}</span>
     </div>
