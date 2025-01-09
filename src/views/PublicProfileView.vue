@@ -30,9 +30,12 @@ const { readAll } = useFetchApiCrud(
   import.meta.env.VITE_API_URL,
 );
 const getLastPublications = () => {
-  fetch(`/api/publications?page=1&limit=3&userId=${id}`, {
-    headers: authorisationHeader,
-  })
+  fetch(
+    `${import.meta.env.VITE_API_URL}/publications?page=1&limit=3&userId=${id}`,
+    {
+      headers: authorisationHeader,
+    },
+  )
     .then(response => response.json())
     .then(data => {
       lastPublications.value = data;
@@ -54,6 +57,24 @@ watchEffect(() => {
 
   if (profile.value && profile.value.isFriend) getLastPublications();
 });
+
+const askFriend = () => {
+  fetch(`${import.meta.env.VITE_API_URL}/friends`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...authorisationHeader,
+    },
+    body: JSON.stringify({ friendId: id }),
+  })
+    .then(response => response.json())
+    .then(data => console.log(data))
+    .catch(error => {
+      console.log(error);
+
+      console.error(error);
+    });
+};
 </script>
 
 <template>
@@ -91,9 +112,9 @@ watchEffect(() => {
       <div
         class="absolute left-0 top-0 flex h-full w-full items-center justify-center rounded-2xl bg-white/10 backdrop-blur-md"
       >
-        <RouterLink to="/friends" class="btn btn-primary"
-          >Ajouter en ami</RouterLink
-        >
+        <button @click="askFriend()" class="btn btn-primary">
+          Ajouter en ami
+        </button>
       </div>
     </div>
   </main>

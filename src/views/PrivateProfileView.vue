@@ -45,7 +45,7 @@ const updateAccount = () => {
     formData.append('profilePicture', profilePicture.value);
   if (password.value) formData.append('password', password.value);
 
-  fetch(`/api/users/${user.value._id}`, {
+  fetch(`${import.meta.env.VITE_API_URL}/users/${user.value._id}`, {
     method: 'PATCH',
     headers: {
       ...authorisationHeader,
@@ -77,7 +77,7 @@ const updateAccount = () => {
     });
 };
 
-fetch(`/api/auth/user`, {
+fetch(`${import.meta.env.VITE_API_URL}/auth/user`, {
   headers: authorisationHeader,
 })
   .then(response => response.json())
