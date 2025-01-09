@@ -31,6 +31,7 @@ const router = createRouter({
       path: '/camera',
       name: 'camera',
       component: CameraView,
+      meta: { hideNavbar: true },
     },
     {
       path: '/friends',
