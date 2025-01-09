@@ -1,31 +1,66 @@
 <script setup>
-import { useFetchApiCrud } from '@/composables/useFetchApiCrud';
+import { ref, computed } from 'vue';
+import AppPublicationComments from '@/components/AppPublicationComments.vue';
+import { useFetchApi } from '@/composables/useFetchApi';
 import { useUserStore } from '@/stores/userStore';
-import { useRoute, onBeforeRouteUpdate } from 'vue-router';
+import { useRoute } from 'vue-router';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faChevronLeft, faEllipsis } from '@fortawesome/free-solid-svg-icons';
 
 const route = useRoute();
 const userStore = useUserStore();
 
-const { read } = useFetchApiCrud(import.meta.env.VITE_API_URL);
+const publication = ref(null);
+const user = ref(null);
 
-const { data, error, loading } = read(`/publications/${route.params.id}`, {
+const { fetchApi } = useFetchApi(import.meta.env.VITE_API_URL, {
   Authorization: `Bearer ${userStore.getToken}`,
 });
 
-onBeforeRouteUpdate(async (to, from) => {
-  console.log('onBeforeRouteUpdate', to.params.id);
+const fetchPublicationAndUser = async () => {
+  try {
+    const publicationResponse = await fetchApi({
+      url: `/publications/${route.params.id}`,
+    });
+    publication.value = publicationResponse.data;
+    const userResponse = await fetchApi({
+      url: `/users/${publicationResponse.data.user}`,
+    });
+    user.value = userResponse.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const formatedDate = computed(() => {
+  const date = new Date(publication.value.createdAt);
+
+  return date.toDateString() === new Date().toDateString()
+    ? `Aujourd'hui à ${date.toLocaleTimeString()}`
+    : `Il y a ${Math.floor(
+        (new Date() - date) / (1000 * 60 * 60 * 24),
+      )} jours à ${date.toLocaleTimeString()}`;
 });
+
+fetchPublicationAndUser();
 </script>
 
 <template>
   <main class="max-h-screen overflow-y-scroll">
-    <div>BeReal - Home</div>
-
-    {{ data }}
+    <div
+      v-if="user"
+      class="flex flex-row items-center justify-between gap-2 p-2"
+    >
+      <button @click="$router.back()">
+        <FontAwesomeIcon class="h-6 w-6 drop-shadow-lg" :icon="faChevronLeft" />
+      </button>
+      <div class="flex flex-col items-center">
+        <p>BeReal de {{ user.name }}</p>
+        <p class="text-xs text-gray-500">{{ formatedDate }}</p>
+      </div>
+      <FontAwesomeIcon class="h-6 w-6 drop-shadow-lg" :icon="faEllipsis" />
+    </div>
+    <AppPublicationComments v-if="publication" :publication />
   </main>
 </template>
-<style>
-* {
-  color: white;
-}
-</style>
+<style></style>
