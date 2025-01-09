@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useUserStore } from '@/stores/userStore';
+import BaseToast from '@/components/BaseToast.vue';
 
 const userStore = useUserStore();
 
@@ -90,40 +91,8 @@ fetch(`${import.meta.env.VITE_API_URL}/auth/user`, {
 
 <template>
   <main class="max-h-screen overflow-y-scroll">
-    <!-- STATUS -->
-    <div v-if="error" role="alert" class="alert alert-error mt-6">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-6 w-6 shrink-0 stroke-current"
-        fill="none"
-        viewBox="0 0 24 24"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-        />
-      </svg>
-      <span>{{ error }}</span>
-    </div>
-    <div v-if="success" role="alert" class="alert alert-success mt-6">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-6 w-6 shrink-0 stroke-current"
-        fill="none"
-        viewBox="0 0 24 24"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-        />
-      </svg>
-      <span>{{ success }}</span>
-    </div>
-    <!-- END STATUS -->
+    <BaseToast v-if="error" :message="error" type="error" />
+    <BaseToast v-if="success" :message="success" type="success" />
 
     <form
       @submit.prevent="updateAccount()"
