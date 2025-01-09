@@ -1,4 +1,5 @@
 <script setup>
+import AppPublicationComments from '@/components/AppPublicationComments.vue';
 import { useFetchApiCrud } from '@/composables/useFetchApiCrud';
 import { useUserStore } from '@/stores/userStore';
 import { useRoute, onBeforeRouteUpdate } from 'vue-router';
@@ -21,7 +22,11 @@ onBeforeRouteUpdate(async (to, from) => {
   <main class="max-h-screen overflow-y-scroll">
     <div>BeReal - Home</div>
 
+    <AppPublicationComments :publication="data" />
+
+    <div class="bg-red-700">-</div>
     {{ data }}
+    <div class="bg-red-700">-</div>
   </main>
 </template>
 <style>

@@ -1,7 +1,7 @@
 <script setup>
 import AppProfilePicture from './AppProfilePicture.vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faComment, faEllipsis } from '@fortawesome/free-solid-svg-icons';
+import { faChevronLeft, faEllipsis } from '@fortawesome/free-solid-svg-icons';
 import { computed, ref, onMounted } from 'vue';
 
 const props = defineProps({
@@ -55,51 +55,40 @@ const smallCamera = computed(() => {
 
 <template>
   <div class="p-1">
-    <div
-      class="flex flex-row content-center items-center justify-between gap-2 p-2"
-    >
-      <RouterLink
-        :to="`/users/${publication.user._id}`"
-        class="text-sm font-bold"
-        ><AppProfilePicture :photo="publication.user.profilePicture.url"
-      /></RouterLink>
-      <div class="flex-grow">
-        <RouterLink
-          :to="`/users/${publication.user._id}`"
-          class="text-sm font-bold"
-          >{{ publication.user.name }}</RouterLink
-        >
-        <p class="text-xs text-gray-500">{{ locality }}, {{ formatedDate }}</p>
+    <div class="flex flex-row items-center justify-between gap-2 p-2">
+      <button @click="$router.back()">
+        <FontAwesomeIcon class="h-6 w-6 drop-shadow-lg" :icon="faChevronLeft" />
+      </button>
+      <div class="flex flex-col items-center">
+        <div>BeReal de fhsoifhsoiefhso{{ publication.user.name }}</div>
+        <p class="text-xs text-gray-500">{{ formatedDate }}</p>
       </div>
-      <!-- TODO : On click for ... icon not set -->
-      <FontAwesomeIcon
-        class="h-4 w-4 rounded-full drop-shadow-lg"
-        :icon="faEllipsis"
-      />
+      <FontAwesomeIcon class="h-6 w-6 drop-shadow-lg" :icon="faEllipsis" />
     </div>
-    <div class="relative">
-      <div
-        class="absolute ml-4 mt-4 h-48 cursor-pointer rounded-lg bg-white shadow-lg"
-        @click="toggleCamera()"
-      >
+    <div class="flex flex-col items-center justify-center gap-6">
+      <div>
+        <div
+          class="ml-4 mt-4 h-32 cursor-pointer rounded-lg bg-white shadow-lg"
+          @click="toggleCamera()"
+        >
+          <img
+            class="h-full w-full rounded-lg border border-black object-cover"
+            :src="smallCamera"
+            alt="publication"
+          />
+        </div>
         <img
-          class="h-full w-full rounded-lg border border-black object-cover"
-          :src="smallCamera"
+          class="w-1/2 rounded-lg object-cover"
+          :src="bigCamera"
           alt="publication"
         />
+        <div
+          class="flex items-center justify-center gap-2 rounded-full bg-gray-800 bg-opacity-70 p-2 text-xs"
+        >
+          <FontAwesomeIcon class="h-4 w-4 drop-shadow-lg" :icon="faEllipsis" />
+          {{ locality }}
+        </div>
       </div>
-      <img
-        class="w-full rounded-lg object-cover"
-        :src="bigCamera"
-        alt="publication"
-      />
-
-      <RouterLink :to="`/publications/${publication._id}`">
-        <FontAwesomeIcon
-          class="absolute bottom-4 right-4 h-6 w-6 rounded-full drop-shadow-lg"
-          :icon="faComment"
-        />
-      </RouterLink>
     </div>
   </div>
 </template>
