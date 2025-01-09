@@ -71,11 +71,6 @@ const smallCamera = computed(() => {
         >
         <p class="text-xs text-gray-500">{{ locality }}, {{ formatedDate }}</p>
       </div>
-      <!-- TODO : On click for ... icon not set -->
-      <FontAwesomeIcon
-        class="h-4 w-4 rounded-full drop-shadow-lg"
-        :icon="faEllipsis"
-      />
     </div>
     <div class="relative">
       <div

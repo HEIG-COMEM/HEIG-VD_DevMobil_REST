@@ -24,7 +24,7 @@ const authorisationHeader = {
 };
 
 const content = ref(0);
-const search = ref(''); //TODO: Implement search functionality
+const search = ref('');
 const searchResults = ref([]);
 
 const page = ref([1, 1]);
@@ -197,7 +197,7 @@ onMounted(() => {
           'tab-active': content === 0,
         }"
         @click="content = 0"
-        >Connexions</a
+        >Amis</a
       >
       <a
         role="tab"
