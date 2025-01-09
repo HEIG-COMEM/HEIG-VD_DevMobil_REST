@@ -1,4 +1,4 @@
-import { useFetchApi } from "./useFetchApi";
+import { useFetchApi } from './useFetchApi';
 
 /**
  * Fetch data from an API and perform CRUD operations
@@ -17,7 +17,6 @@ import { useFetchApi } from "./useFetchApi";
  * const userCrud = useFetchApiCrud('users');
  */
 export function useFetchApiCrud(path, baseUrl = null, additionalHeaders = {}) {
-
   const { fetchApiToRef } = useFetchApi(baseUrl, additionalHeaders);
 
   function read(id, headers = {}, timeout = 5000) {
@@ -29,9 +28,9 @@ export function useFetchApiCrud(path, baseUrl = null, additionalHeaders = {}) {
     });
   }
 
-  function readAll(headers = {}, timeout = 5000) {
+  function readAll(query = null, headers = {}, timeout = 5000) {
     return fetchApiToRef({
-      url: path,
+      url: `${path}${query ? `?${query}` : ''}`,
       method: 'GET',
       headers,
       timeout,
@@ -67,12 +66,23 @@ export function useFetchApiCrud(path, baseUrl = null, additionalHeaders = {}) {
     });
   }
 
+  function updateFull(id, data, headers = {}, timeout = 5000) {
+    return fetchApiToRef({
+      url: `${path}/${id}`,
+      data,
+      method: 'PUT',
+      headers,
+      timeout,
+    });
+  }
+
   return {
     read,
     readAll,
     create,
     del,
     update,
-    fetchApiToRef
+    updateFull,
+    fetchApiToRef,
   };
 }

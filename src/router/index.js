@@ -1,8 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import { useUserStore } from '@/stores/userStore';
 import HomeView from '@/views/HomeView.vue';
 import LoginView from '@/views/LoginView.vue';
 import RegisterView from '@/views/RegisterView.vue';
 import CameraView from '@/views/CameraView.vue';
+import FriendsView from '@/views/FriendsView.vue';
+import PublicationView from '@/views/PublicationView.vue';
+import PublicProfileView from '@/views/PublicProfileView.vue';
+import PrivateProfileView from '@/views/PrivateProfileView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,9 +31,43 @@ const router = createRouter({
       path: '/camera',
       name: 'camera',
       component: CameraView,
-      meta: { hideNavbar: true }, // Navbar masquée
+      meta: { hideNavbar: true },
+    },
+    {
+      path: '/friends',
+      name: 'friends',
+      component: FriendsView,
+    },
+    {
+      path: '/publications/:id',
+      name: 'publication',
+      component: PublicationView,
+    },
+    {
+      path: '/users/:id',
+      name: 'user',
+      component: PublicProfileView,
+    },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: PrivateProfileView,
     }
   ],
+});
+
+/**
+ * Middleware to check if the user is authenticated
+ * before navigating to any route other than login and register
+ */
+router.beforeEach((to, from, next) => {
+  if (
+    to.name !== 'login' &&
+    to.name !== 'register' &&
+    !useUserStore().isAuthenticated
+  )
+    next({ name: 'login' });
+  else next();
 });
 
 export default router;

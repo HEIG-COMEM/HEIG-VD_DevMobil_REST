@@ -1,9 +1,14 @@
 <script setup>
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import { useUserStore } from '../stores/userStore';
 import { useFetchApi } from '../composables/useFetchApi';
 
+const router = useRouter();
+
 const userStore = useUserStore();
+userStore.logout();
+
 const { fetchApi } = useFetchApi(import.meta.env.VITE_API_URL);
 
 const name = ref('');
@@ -16,6 +21,13 @@ const isLoading = ref(false);
 const register = () => {
   isLoading.value = true;
   error.value = '';
+
+  if (!name.value || !email.value || !password.value) {
+    error.value = 'Please fill all fields';
+    isLoading.value = false;
+    return;
+  }
+
   fetchApi({
     url: '/auth/signup',
     method: 'POST',
@@ -29,26 +41,100 @@ const register = () => {
         method: 'POST',
         data: { email: email.value, password: password.value },
       }).then(data => {
-        userStore.setToken(data.token);
+        const res = userStore.setToken(data.token);
+        if (res) {
+          router.replace({ name: 'home', query: { registered: true } });
+        }
       });
     })
-    .catch(err => (error.value = err))
+    .catch(err => (error.value = err.data.message))
     .finally(() => (isLoading.value = false));
 };
 </script>
 
 <template>
-  <h1>Register</h1>
-  <div v-if="error">{{ error.data.message }}</div>
-  <div v-if="isLoading">Loading...</div>
-  <form @submit.prevent="register()">
-    <input type="text" v-model="name" placeholder="Name" />
-    <input type="email" v-model="email" placeholder="Email" />
-    <input type="password" v-model="password" placeholder="Password" />
-    <button type="submit">Register</button>
+  <div v-if="error" role="alert" class="alert alert-error mt-6">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-6 w-6 shrink-0 stroke-current"
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+      />
+    </svg>
+    <span>{{ error }}</span>
+  </div>
+
+  <span v-if="isLoading" class="loading loading-dots loading-lg"></span>
+
+  <form
+    @submit.prevent="register()"
+    class="prose flex h-[80vh] flex-col justify-center gap-12"
+  >
+    <h1 class="text-center">Enregistrement</h1>
+    <div class="flex flex-col gap-4">
+      <label class="input input-bordered flex items-center gap-2">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 16 16"
+          fill="currentColor"
+          class="h-4 w-4 opacity-70"
+        >
+          <path
+            d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z"
+          />
+        </svg>
+        <input type="text" class="grow" placeholder="Nom" v-model="name" />
+      </label>
+      <label class="input input-bordered flex items-center gap-2">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 16 16"
+          fill="currentColor"
+          class="h-4 w-4 opacity-70"
+        >
+          <path
+            d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z"
+          />
+          <path
+            d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z"
+          />
+        </svg>
+        <input type="email" class="grow" placeholder="Email" v-model="email" />
+      </label>
+      <label class="input input-bordered flex items-center gap-2">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 16 16"
+          fill="currentColor"
+          class="h-4 w-4 opacity-70"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z"
+            clip-rule="evenodd"
+          />
+        </svg>
+        <input
+          type="password"
+          class="grow"
+          v-model="password"
+          placeholder="Mot de passe"
+        />
+      </label>
+    </div>
+    <button class="btn btn-primary" type="submit">S'inscrire</button>
   </form>
 
-  <router-link to="/login">Login</router-link>
+  <p class="w-full text-center">
+    Vous avez déjà un compte ?
+    <router-link class="link link-accent" to="/login">Connexion</router-link>
+  </p>
 </template>
 
 <style scoped></style>
