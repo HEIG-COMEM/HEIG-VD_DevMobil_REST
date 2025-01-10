@@ -1,10 +1,10 @@
 <script setup>
 import { ref, computed } from 'vue';
-import { useUserStore } from '@/stores/userStore';
-import { useFetchApi } from '@/composables/useFetchApi';
+import { storeToRefs } from 'pinia';
+import { useFriendsStore } from '@/stores/friendsStore';
 import AppFriendCard from '@/components/AppFriendCard.vue';
 
-const userStore = useUserStore();
+const friendsStore = useFriendsStore();
 
 const props = defineProps({
   friendshipsStatus: {
@@ -20,8 +20,19 @@ const title = computed(() => {
   return props.friendshipsStatus === 'accepted' ? 'Amis' : "Demandes d'amis";
 });
 
-const friendships = ref([]);
-const metas = ref(null);
+const { getAcceptedFriends, getPendingFriends } = storeToRefs(friendsStore);
+
+const friendships = computed(() => {
+  return props.friendshipsStatus === 'accepted'
+    ? getAcceptedFriends.value.data
+    : getPendingFriends.value.data;
+});
+
+const metas = computed(() => {
+  return props.friendshipsStatus === 'accepted'
+    ? getAcceptedFriends.value.metas
+    : getPendingFriends.value.metas;
+});
 
 const page = ref(1);
 const pageSize = ref(5);
@@ -37,53 +48,19 @@ const pageTotal = computed(() => {
   return +metas.value['pagination-total-pages'] || 0;
 });
 
-const { fetchApi } = useFetchApi(import.meta.env.VITE_API_URL, {
-  Authorization: `Bearer ${userStore.getToken}`,
-});
+const { fetchFriends, deleteFriend, acceptFriend, declineFriend } =
+  friendsStore;
 
-const fetchFriends = async () => {
-  const { data, headers } = await fetchApi({
-    url: `/friends?page=${page.value}&pageSize=${pageSize.value}&status=${props.friendshipsStatus}`,
-  });
-  friendships.value = data;
-  metas.value = headers;
+const changePage = direction => {
+  page.value += direction;
+  fetchFriends(props.friendshipsStatus, page.value, pageSize.value);
 };
 
-const deleteFriend = async friendshipId => {
-  await fetchApi({
-    url: `/friends/${friendshipId}`,
-    method: 'DELETE',
-  });
-  fetchFriends();
-};
-
-const updateFriendStatus = async (friendshipId, status) => {
-  await fetchApi({
-    url: `/friends/${friendshipId}`,
-    method: 'PATCH',
-    body: { status },
-  });
-  fetchFriends();
-};
-
-const acceptFriend = friendshipId =>
-  updateFriendStatus(friendshipId, 'accepted');
-const declineFriend = friendshipId =>
-  updateFriendStatus(friendshipId, 'declined');
-
-const nextPage = () => {
-  page.value += 1;
-  fetchFriends();
-};
+const nextPage = () => changePage(1);
 const hasNextPage = computed(() => page.value < pageTotal.value);
 
-const prevPage = () => {
-  page.value -= 1;
-  fetchFriends();
-};
+const prevPage = () => changePage(-1);
 const hasPrevPage = computed(() => page.value > 1);
-
-fetchFriends();
 </script>
 
 <template>
