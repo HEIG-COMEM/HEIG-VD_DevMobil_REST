@@ -86,7 +86,7 @@ const askFriend = async () => {
 </script>
 
 <template>
-  <main class="max-h-screen overflow-y-scroll">
+  <main class="max-h-screen overflow-y-scroll pb-40 pt-6">
     <BaseToast v-if="error" :message="error" type="error" />
     <BaseToast v-if="success" :message="success" type="success" />
 

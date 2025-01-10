@@ -1,6 +1,6 @@
 <script setup>
 import TheNavbar from '@/components/TheNavbar.vue';
-import TheApiStatusIndicator from '@/components/TheApiStatusIndicator.vue';
+import TheHeader from '@/components/TheHeader.vue';
 import { useRoute } from 'vue-router';
 import { ref, watch } from 'vue';
 
@@ -20,7 +20,7 @@ watch(
 
 <template>
   <div class="relative h-dvh w-full max-w-screen-sm overflow-hidden">
-    <TheApiStatusIndicator />
+    <TheHeader v-if="!hideNavbar" />
     <slot></slot>
     <TheNavbar v-if="!hideNavbar" class="absolute bottom-0 left-0 w-full" />
   </div>

@@ -50,7 +50,7 @@ onBeforeRouteLeave(() => {
 </script>
 
 <template>
-  <main class="h-screen overflow-y-scroll">
+  <main class="h-screen overflow-y-scroll pb-40 pt-6">
     <AppSearchBar
       placeholder="Ajouter ou rechercher des amis"
       class="mb-8"

@@ -92,7 +92,7 @@ fetchUser();
 
     <form
       @submit.prevent="updateAccount()"
-      class="prose mt-12 flex h-[80vh] flex-col justify-center gap-12"
+      class="prose mt-12 flex h-full flex-col justify-center gap-12"
     >
       <div class="not-prose avatar justify-center">
         <div
