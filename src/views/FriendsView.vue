@@ -7,7 +7,7 @@ import { useUserStore } from '@/stores/userStore';
 import { useFriendsStore } from '@/stores/friendsStore';
 import AppFriendCard from '@/components/AppFriendCard.vue';
 import AppSearchBar from '@/components/AppSearchBar.vue';
-import AppFriendList from '@/components/AppFriendList.vue';
+import AppFriendListing from '@/components/AppFriendListing.vue';
 
 const userStore = useUserStore();
 const friendsStore = useFriendsStore();
@@ -58,8 +58,8 @@ onBeforeRouteLeave(() => {
       id="search"
     />
 
-    <AppFriendList v-if="content === 0" friendshipsStatus="accepted" />
-    <AppFriendList
+    <AppFriendListing v-if="content === 0" friendshipsStatus="accepted" />
+    <AppFriendListing
       v-if="content === 1"
       friendshipsStatus="pending"
       @count="pendingFriendsCount = $event"

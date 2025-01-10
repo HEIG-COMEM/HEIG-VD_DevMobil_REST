@@ -93,6 +93,7 @@ const hasPrevPage = computed(() => page.value > 1);
   <p v-else class="my-12 text-center text-sm text-neutral-content">
     Vous n'avez pas encore d'amis. Ajoutez-en en recherchant leur nom ci-dessus.
   </p>
+  <!-- TODO: Rework pagination -->
   <div
     class="flex flex-row justify-center gap-2"
     v-if="hasNextPage || hasPrevPage"
