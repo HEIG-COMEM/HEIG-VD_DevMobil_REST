@@ -9,7 +9,7 @@ import TheApiStatusIndicator from '@/components/TheApiStatusIndicator.vue';
     class="flex flex-row items-center justify-between gap-5 rounded-b-3xl bg-base-100 p-5"
   >
     <TheApiStatusIndicator />
-    BeReal - Copy
+    <span>HEIG-VD - BeReal - Copy</span>
     <RouterLink to="/profile">
       <FontAwesomeIcon :icon="faUser" class="cursor-pointer" />
     </RouterLink>
