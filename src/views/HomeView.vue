@@ -28,8 +28,6 @@ const authorizationHeader = {
   Authorization: `Bearer ${userStore.getToken}`,
 };
 
-const { data, error, loading } = readAll(null, authorizationHeader);
-
 const publications = ref([]);
 
 const fetchPublications = async () => {
@@ -40,9 +38,7 @@ fetchPublications();
 </script>
 
 <template>
-  <main class="max-h-screen overflow-y-scroll pb-28">
-    <div>BeReal - Home</div>
-
+  <main class="max-h-screen overflow-y-scroll pb-40 pt-6">
     <BaseToast v-if="alert" :message="alert" type="success" />
 
     <AppPublicationCard
