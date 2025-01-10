@@ -21,6 +21,7 @@ const profilePictureUrl = computed(() => {
 
 const error = ref(null);
 const success = ref(null);
+const loading = ref(false);
 
 const { fetchApi } = useFetchApi(import.meta.env.VITE_API_URL, {
   Authorization: `Bearer ${userStore.getToken}`,
@@ -33,9 +34,11 @@ const handleFileUpload = event => {
   }
 };
 
-const updateAccount = () => {
+const updateAccount = async () => {
   if (!name.value || !email.value) return;
   if (password.value && password.value !== passwordConfirmation.value) return;
+
+  loading.value = true;
 
   error.value = null;
   success.value = null;
@@ -47,28 +50,29 @@ const updateAccount = () => {
     formData.append('profilePicture', profilePicture.value);
   if (password.value) formData.append('password', password.value);
 
-  fetch(`${import.meta.env.VITE_API_URL}/users/${user.value._id}`, {
-    method: 'PATCH',
-    headers: {
-      Authorization: `Bearer ${userStore.getToken}`,
-    },
-    body: formData,
-  })
-    .then(response => {
-      response.json();
-    })
-    .then(() => {
-      success.value = 'Votre compte a été mis à jour';
-    })
-    .catch(() => {
-      error.value =
-        'Une erreur est survenue lors de la mise à jour de votre compte';
-    })
-    .finally(() => {
-      password.value = null;
-      passwordConfirmation.value = null;
-      userStore.refreshUser();
-    });
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/users/${user.value._id}`,
+      {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${userStore.getToken}`,
+        },
+        body: formData,
+      },
+    );
+
+    if (!response.ok) throw new Error((await response.json()).message);
+
+    success.value = 'Votre compte a été mis à jour';
+  } catch (err) {
+    error.value = err.message;
+  } finally {
+    password.value = null;
+    passwordConfirmation.value = null;
+    userStore.refreshUser();
+    loading.value = false;
+  }
 };
 
 const fetchUser = async () => {
@@ -191,7 +195,9 @@ fetchUser();
           />
         </label>
       </div>
-      <button class="btn btn-primary" type="submit">Mettre à jour</button>
+      <button class="btn btn-primary" type="submit" :disabled="loading">
+        {{ loading ? 'Chargement...' : 'Mettre à jour' }}
+      </button>
     </form>
   </main>
 </template>
