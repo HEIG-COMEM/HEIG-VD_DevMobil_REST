@@ -39,12 +39,6 @@ export const useFriendsStore = defineStore('friends', () => {
     }
   }
 
-  /**
-   * Initially, fetch the friends
-   */
-  // fetchFriends('accepted');
-  fetchFriends('pending');
-
   const getAcceptedFriends = computed(() => {
     if (acceptedFriends.value.data.length === 0) fetchFriends('accepted')
     return acceptedFriends
@@ -74,6 +68,17 @@ export const useFriendsStore = defineStore('friends', () => {
   const acceptFriend = async (friendshipId) => await updateFriendStatus(friendshipId, 'accepted');
   const declineFriend = async (friendshipId) => await updateFriendStatus(friendshipId, 'denied');
 
+  const reset = () => {
+    acceptedFriends.value = {
+      data: [],
+      metas: null,
+    };
+    pendingFriends.value = {
+      data: [],
+      metas: null,
+    };
+  };
+
   return {
     getAcceptedFriends,
     getPendingFriends,
@@ -81,5 +86,6 @@ export const useFriendsStore = defineStore('friends', () => {
     deleteFriend,
     acceptFriend,
     declineFriend,
+    reset,
   };
 });

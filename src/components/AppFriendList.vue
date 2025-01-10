@@ -34,7 +34,7 @@ const metas = computed(() => {
     : getPendingFriends.value.metas;
 });
 
-const page = ref(1);
+const page = ref(+metas.value?.['pagination-page'] || 1);
 const pageSize = ref(5);
 
 const totalFriends = computed(() => {
