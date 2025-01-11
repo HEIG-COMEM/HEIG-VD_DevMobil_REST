@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue';
+import { ref, computed } from 'vue';
 
 const props = defineProps({
   message: {
@@ -13,6 +13,8 @@ const props = defineProps({
   },
 });
 
+const toast = ref(null);
+
 const classe = computed(() => {
   return {
     'alert-info': props.type === 'info',
@@ -22,15 +24,13 @@ const classe = computed(() => {
 });
 
 setTimeout(() => {
-  document.querySelector('.toast').remove();
+  toast.value.remove();
 }, 5000);
 </script>
 
 <template>
-  <div class="toast toast-center toast-top z-50">
-    <div class="alert" :class="classe">
-      <span>{{ message }}</span>
-    </div>
+  <div class="alert" :class="classe" ref="toast">
+    <span>{{ message }}</span>
   </div>
 </template>
 
