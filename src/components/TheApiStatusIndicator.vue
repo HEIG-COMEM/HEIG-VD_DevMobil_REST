@@ -8,7 +8,7 @@ onMounted(() => {
   const fetchApiStatus = async () => {
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 5000);
+      const timeoutId = setTimeout(() => controller.abort(), 1000);
       const response = await fetch(`${import.meta.env.VITE_API_URL}/status`, {
         signal: controller.signal,
       });

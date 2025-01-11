@@ -10,6 +10,9 @@ export const useFriendsStore = defineStore('friends', () => {
     Authorization: `Bearer ${userStore.getToken}`,
   });
 
+  const acceptedPage = ref(1);
+  const pendingPage = ref(1);
+
   const acceptedFriends = ref({
     data: [],
     metas: null,
@@ -19,23 +22,36 @@ export const useFriendsStore = defineStore('friends', () => {
     metas: null,
   });
 
-  const fetchFriends = async (status, page = 1, pageSize = 5) => {
+  const fetchFriends = async (status, pageSize = 5) => {
+    const page = status === 'accepted' ? acceptedPage.value : pendingPage.value
     const { data, headers } = await fetchApi({
       url: `/friends?page=${page}&pageSize=${pageSize}&status=${status}`,
     });
 
     if (status === 'accepted') {
       acceptedFriends.value = {
-        data,
+        data: [...acceptedFriends.value.data, ...data],
         metas: headers
       };
     }
 
     if (status === 'pending') {
       pendingFriends.value = {
-        data,
+        data: [...pendingFriends.value.data, ...data],
         metas: headers
       };
+    }
+  }
+
+  const loadMoreFriends = async (status) => {
+    if (status === 'accepted') {
+      acceptedPage.value += 1;
+      await fetchFriends(status);
+    }
+
+    if (status === 'pending') {
+      pendingPage.value += 1;
+      await fetchFriends(status);
     }
   }
 
@@ -68,24 +84,22 @@ export const useFriendsStore = defineStore('friends', () => {
   const acceptFriend = async (friendshipId) => await updateFriendStatus(friendshipId, 'accepted');
   const declineFriend = async (friendshipId) => await updateFriendStatus(friendshipId, 'denied');
 
-  const reset = () => {
-    acceptedFriends.value = {
-      data: [],
-      metas: null,
-    };
-    pendingFriends.value = {
-      data: [],
-      metas: null,
-    };
+  const hasMoreFriends = (status) => {
+    const metas = status === 'accepted' ? acceptedFriends.value.metas : pendingFriends.value.metas;
+    return metas && metas['pagination-total-pages'] > metas['pagination-page'];
   };
+
+  const hasMoreAcceptedFriends = computed(() => hasMoreFriends('accepted'));
+  const hasMorePendingFriends = computed(() => hasMoreFriends('pending'));
 
   return {
     getAcceptedFriends,
     getPendingFriends,
-    fetchFriends,
+    hasMoreAcceptedFriends,
+    hasMorePendingFriends,
+    loadMoreFriends,
     deleteFriend,
     acceptFriend,
     declineFriend,
-    reset,
   };
 });
