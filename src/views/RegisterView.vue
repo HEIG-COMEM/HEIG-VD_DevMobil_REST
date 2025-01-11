@@ -2,13 +2,14 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores/userStore';
+import { useNotificationsStore } from '@/stores/notificationsStore';
 import { useFetchApi } from '@/composables/useFetchApi';
-import BaseToast from '@/components/BaseToast.vue';
 
 const router = useRouter();
 
 const userStore = useUserStore();
 userStore.logout();
+const notificationsStore = useNotificationsStore();
 
 const { fetchApi } = useFetchApi(import.meta.env.VITE_API_URL);
 
@@ -16,15 +17,16 @@ const name = ref('');
 const email = ref('');
 const password = ref('');
 
-const error = ref('');
 const isLoading = ref(false);
 
 const register = () => {
   isLoading.value = true;
-  error.value = '';
 
   if (!name.value || !email.value || !password.value) {
-    error.value = 'Please fill all fields';
+    notificationsStore.addMessage({
+      message: 'Veuillez remplir tous les champs',
+      type: 'error',
+    });
     isLoading.value = false;
     return;
   }
@@ -48,16 +50,17 @@ const register = () => {
         }
       });
     })
-    .catch(err => (error.value = err.data.message))
+    .catch(err => {
+      notificationsStore.addMessage({
+        message: err.data.message,
+        type: 'error',
+      });
+    })
     .finally(() => (isLoading.value = false));
 };
 </script>
 
 <template>
-  <BaseToast v-if="error" :message="error" type="error" />
-
-  <span v-if="isLoading" class="loading loading-dots loading-lg"></span>
-
   <form
     @submit.prevent="register()"
     class="prose flex h-[80vh] flex-col justify-center gap-12"
@@ -114,7 +117,9 @@ const register = () => {
         />
       </label>
     </div>
-    <button class="btn btn-primary" type="submit">S'inscrire</button>
+    <button class="btn btn-primary" type="submit" :disabled="isLoading">
+      {{ isLoading ? 'Chargement...' : "S'inscrire" }}
+    </button>
   </form>
 
   <p class="w-full text-center">
