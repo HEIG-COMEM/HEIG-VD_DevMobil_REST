@@ -10,6 +10,9 @@ export const useFriendsStore = defineStore('friends', () => {
     Authorization: `Bearer ${userStore.getToken}`,
   });
 
+  const acceptedPage = ref(1);
+  const pendingPage = ref(1);
+
   const acceptedFriends = ref({
     data: [],
     metas: null,
@@ -19,32 +22,58 @@ export const useFriendsStore = defineStore('friends', () => {
     metas: null,
   });
 
-  const fetchFriends = async (status, page = 1, pageSize = 5) => {
+  const _fetchFriends = async (status, page = 1, pageSize = 5) => {
     const { data, headers } = await fetchApi({
       url: `/friends?page=${page}&pageSize=${pageSize}&status=${status}`,
     });
 
     if (status === 'accepted') {
       acceptedFriends.value = {
-        data,
+        data: [...acceptedFriends.value.data, ...data],
         metas: headers
       };
     }
 
     if (status === 'pending') {
       pendingFriends.value = {
-        data,
+        data: [...pendingFriends.value.data, ...data],
         metas: headers
       };
+    }
+  };
+
+  const refreshFriends = async (status) => {
+    const page = status === 'accepted' ? acceptedPage.value : pendingPage.value;
+    if (status === 'accepted') acceptedFriends.value = { data: [], metas: null };
+    if (status === 'pending') pendingFriends.value = { data: [], metas: null };
+    for (let i = 1; i <= page; i++) {
+      await _fetchFriends(status, i);
+    }
+  };
+
+  const loadCurrentFriends = async (status) => {
+    const page = status === 'accepted' ? acceptedPage.value : pendingPage.value;
+    await _fetchFriends(status, page);
+  }
+
+  const loadMoreFriends = async (status) => {
+    if (status === 'accepted') {
+      acceptedPage.value += 1;
+      await loadCurrentFriends(status);
+    }
+
+    if (status === 'pending') {
+      pendingPage.value += 1;
+      await loadCurrentFriends(status);
     }
   }
 
   const getAcceptedFriends = computed(() => {
-    if (acceptedFriends.value.data.length === 0) fetchFriends('accepted')
+    if (acceptedFriends.value.data.length === 0) loadCurrentFriends('accepted')
     return acceptedFriends
   });
   const getPendingFriends = computed(() => {
-    if (pendingFriends.value.data.length === 0) fetchFriends('pending')
+    if (pendingFriends.value.data.length === 0) loadCurrentFriends('pending')
     return pendingFriends
   });
 
@@ -53,7 +82,7 @@ export const useFriendsStore = defineStore('friends', () => {
       url: `/friends/${friendshipId}`,
       method: 'DELETE',
     });
-    fetchFriends('accepted');
+    refreshFriends('accepted');
   };
 
   const updateFriendStatus = async (friendshipId, status) => {
@@ -62,30 +91,28 @@ export const useFriendsStore = defineStore('friends', () => {
       method: 'PATCH',
       data: { status },
     });
-    fetchFriends('pending');
+    refreshFriends('pending');
   };
 
   const acceptFriend = async (friendshipId) => await updateFriendStatus(friendshipId, 'accepted');
   const declineFriend = async (friendshipId) => await updateFriendStatus(friendshipId, 'denied');
 
-  const reset = () => {
-    acceptedFriends.value = {
-      data: [],
-      metas: null,
-    };
-    pendingFriends.value = {
-      data: [],
-      metas: null,
-    };
+  const hasMoreFriends = (status) => {
+    const metas = status === 'accepted' ? acceptedFriends.value.metas : pendingFriends.value.metas;
+    return metas && metas['pagination-total-pages'] > metas['pagination-page'];
   };
+
+  const hasMoreAcceptedFriends = computed(() => hasMoreFriends('accepted'));
+  const hasMorePendingFriends = computed(() => hasMoreFriends('pending'));
 
   return {
     getAcceptedFriends,
     getPendingFriends,
-    fetchFriends,
+    hasMoreAcceptedFriends,
+    hasMorePendingFriends,
+    loadMoreFriends,
     deleteFriend,
     acceptFriend,
     declineFriend,
-    reset,
   };
 });

@@ -16,26 +16,28 @@ const props = defineProps({
 
 const emits = defineEmits(['count']);
 
+const data = ref([]);
+const hasMore = ref(false);
+
 const title = computed(() => {
   return props.friendshipsStatus === 'accepted' ? 'Amis' : "Demandes d'amis";
 });
 
-const { getAcceptedFriends, getPendingFriends } = storeToRefs(friendsStore);
+if (props.friendshipsStatus === 'accepted') {
+  const { getAcceptedFriends, hasMoreAcceptedFriends } =
+    storeToRefs(friendsStore);
+  data.value = getAcceptedFriends;
+  hasMore.value = hasMoreAcceptedFriends;
+} else {
+  const { getPendingFriends, hasMorePendingFriends } =
+    storeToRefs(friendsStore);
+  data.value = getPendingFriends;
+  hasMore.value = hasMorePendingFriends;
+}
 
-const friendships = computed(() => {
-  return props.friendshipsStatus === 'accepted'
-    ? getAcceptedFriends.value.data
-    : getPendingFriends.value.data;
-});
-
-const metas = computed(() => {
-  return props.friendshipsStatus === 'accepted'
-    ? getAcceptedFriends.value.metas
-    : getPendingFriends.value.metas;
-});
-
-const page = ref(+metas.value?.['pagination-page'] || 1);
-const pageSize = ref(5);
+const friendships = computed(() => data.value.value);
+const metas = computed(() => friendships.value.metas);
+const showLoadMore = computed(() => hasMore.value.value);
 
 const totalFriends = computed(() => {
   if (metas.value === null) return 0;
@@ -43,34 +45,20 @@ const totalFriends = computed(() => {
   return +metas.value['pagination-total-count'] || 0;
 });
 
-const pageTotal = computed(() => {
-  if (metas.value === null) return 0;
-  return +metas.value['pagination-total-pages'] || 0;
-});
-
-const { fetchFriends, deleteFriend, acceptFriend, declineFriend } =
+const { loadMoreFriends, deleteFriend, acceptFriend, declineFriend } =
   friendsStore;
 
-const changePage = direction => {
-  page.value += direction;
-  fetchFriends(props.friendshipsStatus, page.value, pageSize.value);
-};
-
-const nextPage = () => changePage(1);
-const hasNextPage = computed(() => page.value < pageTotal.value);
-
-const prevPage = () => changePage(-1);
-const hasPrevPage = computed(() => page.value > 1);
+const loadMore = () => loadMoreFriends(props.friendshipsStatus);
 </script>
 
 <template>
   <p class="mb-2 text-sm uppercase text-neutral-content">
     {{ title }} ({{ totalFriends }})
   </p>
-  <div class="flex flex-col gap-2" v-if="friendships?.length">
+  <div class="flex flex-col gap-2" v-if="friendships.data.length">
     <template v-if="friendshipsStatus === 'accepted'">
       <AppFriendCard
-        v-for="friendship in friendships"
+        v-for="friendship in friendships.data"
         :key="friendship._id"
         :friend="friendship.friend"
         :friendshipId="friendship._id"
@@ -80,7 +68,7 @@ const hasPrevPage = computed(() => page.value > 1);
     </template>
     <template v-if="friendshipsStatus === 'pending'">
       <AppFriendCard
-        v-for="friendship in friendships"
+        v-for="friendship in friendships.data"
         :key="friendship._id"
         :friend="friendship.friend"
         :friendshipId="friendship._id"
@@ -93,13 +81,8 @@ const hasPrevPage = computed(() => page.value > 1);
   <p v-else class="my-12 text-center text-sm text-neutral-content">
     Vous n'avez pas encore d'amis. Ajoutez-en en recherchant leur nom ci-dessus.
   </p>
-  <!-- TODO: Rework pagination -->
-  <div
-    class="flex flex-row justify-center gap-2"
-    v-if="hasNextPage || hasPrevPage"
-  >
-    <button class="btn" @click="prevPage()" v-if="hasPrevPage">Previous</button>
-    <button class="btn" @click="nextPage()" v-if="hasNextPage">Next</button>
+  <div class="flex flex-row justify-center gap-2" v-if="showLoadMore">
+    <button class="btn" @click="loadMore()">Chargez plus</button>
   </div>
 </template>
 

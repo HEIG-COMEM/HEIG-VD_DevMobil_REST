@@ -1,16 +1,13 @@
 <script setup>
 import { ref, watch, onMounted } from 'vue';
-import { onBeforeRouteLeave } from 'vue-router';
 import { debounce } from '@/utils/debounce';
 import { useFetchApi } from '@/composables/useFetchApi';
 import { useUserStore } from '@/stores/userStore';
-import { useFriendsStore } from '@/stores/friendsStore';
 import AppFriendCard from '@/components/AppFriendCard.vue';
 import AppSearchBar from '@/components/AppSearchBar.vue';
 import AppFriendListing from '@/components/AppFriendListing.vue';
 
 const userStore = useUserStore();
-const friendsStore = useFriendsStore();
 
 const { fetchApi } = useFetchApi(import.meta.env.VITE_API_URL, {
   Authorization: `Bearer ${userStore.getToken}`,
@@ -40,12 +37,6 @@ onMounted(() => {
   const searchInput = document.querySelector('#search input');
 
   searchInput.addEventListener('focus', () => (content.value = 2));
-});
-
-onBeforeRouteLeave(() => {
-  search.value = '';
-  searchResults.value = [];
-  friendsStore.reset();
 });
 </script>
 
