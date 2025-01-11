@@ -1,10 +1,11 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useUserStore } from '@/stores/userStore';
+import { useNotificationsStore } from '@/stores/notificationsStore';
 import { useFetchApi } from '@/composables/useFetchApi';
-import BaseToast from '@/components/BaseToast.vue';
 
 const userStore = useUserStore();
+const notificationsStore = useNotificationsStore();
 
 const user = ref(null);
 const name = ref(null);
@@ -19,8 +20,6 @@ const profilePictureUrl = computed(() => {
   return user.value?.profilePicture?.url;
 });
 
-const error = ref(null);
-const success = ref(null);
 const loading = ref(false);
 
 const { fetchApi } = useFetchApi(import.meta.env.VITE_API_URL, {
@@ -39,9 +38,6 @@ const updateAccount = async () => {
   if (password.value && password.value !== passwordConfirmation.value) return;
 
   loading.value = true;
-
-  error.value = null;
-  success.value = null;
 
   const formData = new FormData();
   formData.append('name', name.value);
@@ -64,9 +60,15 @@ const updateAccount = async () => {
 
     if (!response.ok) throw new Error((await response.json()).message);
 
-    success.value = 'Votre compte a été mis à jour';
+    notificationsStore.addMessage({
+      message: 'Votre compte a été mis à jour',
+      type: 'success',
+    });
   } catch (err) {
-    error.value = err.message;
+    notificationsStore.addMessage({
+      message: err.message,
+      type: 'error',
+    });
   } finally {
     password.value = null;
     passwordConfirmation.value = null;
@@ -87,9 +89,6 @@ fetchUser();
 
 <template>
   <main class="max-h-screen overflow-y-scroll">
-    <BaseToast v-if="error" :message="error" type="error" />
-    <BaseToast v-if="success" :message="success" type="success" />
-
     <form
       @submit.prevent="updateAccount()"
       class="prose mt-12 flex h-full flex-col justify-center gap-12"

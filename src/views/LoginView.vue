@@ -2,25 +2,24 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores/userStore';
+import { useNotificationsStore } from '@/stores/notificationsStore';
 import { useFetchApi } from '@/composables/useFetchApi';
-import BaseToast from '@/components/BaseToast.vue';
 
 const router = useRouter();
 
 const userStore = useUserStore();
 userStore.logout();
+const notificationsStore = useNotificationsStore();
 
 const { fetchApi } = useFetchApi(import.meta.env.VITE_API_URL);
 
 const email = ref('');
 const password = ref('');
 
-const error = ref('');
 const isLoading = ref(false);
 
 const login = () => {
   isLoading.value = true;
-  error.value = '';
   fetchApi({
     url: '/auth/login',
     method: 'POST',
@@ -32,16 +31,17 @@ const login = () => {
         router.replace({ name: 'home', query: { loggedIn: true } });
       }
     })
-    .catch(() => (error.value = 'Email ou mot de passe incorrect'))
+    .catch(() => {
+      notificationsStore.addMessage({
+        message: 'Email ou mot de passe incorrect',
+        type: 'error',
+      });
+    })
     .finally(() => (isLoading.value = false));
 };
 </script>
 
 <template>
-  <BaseToast v-if="error" :message="error" type="error" />
-
-  <span v-if="isLoading" class="loading loading-dots loading-lg"></span>
-
   <form
     @submit.prevent="login()"
     class="prose flex h-[80vh] flex-col justify-center gap-12"
@@ -85,7 +85,9 @@ const login = () => {
         />
       </label>
     </div>
-    <button class="btn btn-primary" type="submit">Connexion</button>
+    <button class="btn btn-primary" type="submit" :disabled="isLoading">
+      {{ isLoading ? 'Chargement...' : 'Connexion' }}
+    </button>
   </form>
 
   <p class="w-full text-center">

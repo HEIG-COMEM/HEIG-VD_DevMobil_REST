@@ -3,10 +3,11 @@ import { ref, watchEffect, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useFetchApi } from '@/composables/useFetchApi';
 import { useUserStore } from '@/stores/userStore';
+import { useNotificationsStore } from '@/stores/notificationsStore';
 import AppPublicProfile from '@/components/AppPublicProfile.vue';
-import BaseToast from '@/components/BaseToast.vue';
 
 const userStore = useUserStore();
+const notificationsStore = useNotificationsStore();
 const router = useRouter();
 const route = useRoute();
 
@@ -15,14 +16,6 @@ const profile = ref(null);
 const stats = ref(null);
 const lastPublications = ref(null);
 const isFriend = computed(() => profile.value?.isFriend);
-
-const error = ref(null);
-const success = ref(null);
-
-const resetStatus = () => {
-  error.value = null;
-  success.value = null;
-};
 
 watchEffect(() => {
   if (!userStore.getUser) return;
@@ -44,14 +37,16 @@ const getLastPublications = async () => {
       lastPublications.value = [...data, ...Array(3 - data.length).fill(null)];
     }
   } catch (err) {
-    console.log(err);
-    error.value =
-      'Une erreur est survenue lors de la récupération des publications';
+    console.error(err);
+    notificationsStore.addMessage({
+      message:
+        'Une erreur est survenue lors de la récupération des publications',
+      type: 'error',
+    });
   }
 };
 
 const fetchProfileAndStats = async () => {
-  resetStatus();
   try {
     const [profileResponse, statsResponse] = await Promise.all([
       fetchApi({ url: `/users/${id}` }),
@@ -61,8 +56,11 @@ const fetchProfileAndStats = async () => {
     profile.value = profileResponse.data;
     stats.value = statsResponse.data;
   } catch (err) {
-    console.log(err);
-    error.value = 'Une erreur est survenue lors de la récupération du profil';
+    console.error(err);
+    notificationsStore.addMessage({
+      message: 'Une erreur est survenue lors de la récupération du profil',
+      type: 'error',
+    });
   }
 
   if (profile.value.isFriend) getLastPublications();
@@ -70,26 +68,28 @@ const fetchProfileAndStats = async () => {
 fetchProfileAndStats();
 
 const askFriend = async () => {
-  resetStatus();
   try {
     await fetchApi({
       url: `/friends`,
       method: 'POST',
       data: { friendId: id },
     });
-    success.value = "La demande d'ami a bien été envoyée";
+    notificationsStore.addMessage({
+      message: "La demande d'ami a bien été envoyée",
+      type: 'success',
+    });
   } catch (err) {
-    console.log(err);
-    error.value = "Une erreur est survenue lors de l'ajout de l'ami";
+    console.error(err);
+    notificationsStore.addMessage({
+      message: "Une erreur est survenue lors de l'ajout de l'ami",
+      type: 'error',
+    });
   }
 };
 </script>
 
 <template>
   <main class="max-h-screen overflow-y-scroll pb-40 pt-6">
-    <BaseToast v-if="error" :message="error" type="error" />
-    <BaseToast v-if="success" :message="success" type="success" />
-
     <AppPublicProfile :profile :stats />
     <p class="mt-12 text-xl font-bold">BeReal récents :</p>
     <template v-if="isFriend">
