@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue';
-import AppPublicationComments from '@/components/AppPublicationComments.vue';
+import AppPublicationView from '@/components/AppPublicationView.vue';
 import { useFetchApi } from '@/composables/useFetchApi';
 import { useUserStore } from '@/stores/userStore';
 import { useRoute } from 'vue-router';
@@ -60,7 +60,7 @@ fetchPublicationAndUser();
       </div>
       <FontAwesomeIcon class="h-6 w-6 drop-shadow-lg" :icon="faEllipsis" />
     </div>
-    <AppPublicationComments v-if="publication" :publication />
+    <AppPublicationView v-if="publication" :publication />
   </main>
 </template>
 <style></style>
