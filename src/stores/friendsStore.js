@@ -27,6 +27,8 @@ export const useFriendsStore = defineStore('friends', () => {
       url: `/friends?page=${page}&pageSize=${pageSize}&status=${status}`,
     });
 
+    console.log(headers);
+
     if (status === 'accepted') {
       acceptedFriends.value = {
         data: [...acceptedFriends.value.data, ...data],
@@ -98,7 +100,9 @@ export const useFriendsStore = defineStore('friends', () => {
   const declineFriend = async (friendshipId) => await updateFriendStatus(friendshipId, 'denied');
 
   const hasMoreAcceptedFriends = computed(() => {
+
     const metas = acceptedFriends.value.metas;
+    console.log(metas?.['pagination-total-pages'], metas?.['pagination-page']);
     return metas && metas['pagination-total-pages'] > metas['pagination-page'];
   });
 
