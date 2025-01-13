@@ -74,7 +74,7 @@ const smallCamera = computed(() => {
     </div>
     <div class="relative">
       <div
-        class="absolute ml-4 mt-4 h-48 cursor-pointer rounded-lg bg-white shadow-lg"
+        class="absolute ml-4 mt-4 h-36 cursor-pointer rounded-lg bg-white shadow-lg"
         @click="toggleCamera()"
       >
         <img
