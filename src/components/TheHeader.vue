@@ -33,8 +33,8 @@ onMounted(() => {
       <TheApiStatusIndicator class="mr-2" />
       <TheWSStatusIndicator />
     </div>
-    <div class="flex flex-row items-center justify-center gap-2">
-      <span>HEIG-VD - BeReal - Copy</span>
+    <div class="flex flex-col items-center justify-center gap-2 md:flex-row">
+      <span class="text-center">HEIG-VD - BeReal</span>
       <FontAwesomeIcon
         :icon="faBell"
         class="cursor-pointer text-primary"

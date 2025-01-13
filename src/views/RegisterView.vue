@@ -64,9 +64,9 @@ const register = async () => {
 <template>
   <form
     @submit.prevent="register()"
-    class="prose flex h-[80vh] flex-col justify-center gap-12"
+    class="flex h-[80vh] flex-col justify-center gap-12"
   >
-    <h1 class="text-center">Enregistrement</h1>
+    <h1 class="text-center text-4xl font-bold">Enregistrement</h1>
     <div class="flex flex-col gap-4">
       <label class="input input-bordered flex items-center gap-2">
         <svg

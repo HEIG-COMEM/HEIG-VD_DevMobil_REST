@@ -91,7 +91,7 @@ const askFriend = async () => {
 </script>
 
 <template>
-  <main class="max-h-screen overflow-y-scroll pb-40 pt-6">
+  <main class="max-h-screen overflow-y-scroll pb-44 pt-6">
     <AppPublicProfile :profile :stats />
     <p class="mt-12 text-xl font-bold">BeReal récents :</p>
     <template v-if="isFriend === 1">
