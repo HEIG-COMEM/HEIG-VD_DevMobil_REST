@@ -1,16 +1,10 @@
 import { defineStore } from 'pinia';
 import { computed, ref, watch } from 'vue';
 import { useUserStore } from '@/stores/userStore';
+import { useFetchApi } from '@/composables/useFetchApi';
 
 const handleSocketMessage = (data) => {
   const message = JSON.parse(data);
-
-  /**
-   * Possible messages types = ['commentCreated', 'friendRequestUpdate', 'publicationCreated'];
-  **/
-
-  console.log(message);
-
 
   let toast = null;
 
@@ -37,6 +31,10 @@ const handleSocketMessage = (data) => {
 
 export const useNotificationsStore = defineStore('Notifications', () => {
 
+  const userStore = useUserStore();
+  const { fetchApi } = useFetchApi(import.meta.env.VITE_API_URL, {
+    Authorization: `Bearer ${userStore.getToken}`,
+  });
 
   const SERVER_MESSAGE_PATTERN = /^\[Server\]/;
 
@@ -79,11 +77,26 @@ export const useNotificationsStore = defineStore('Notifications', () => {
     messages.value.push({ message, type });
   };
 
+  const sendBeRealNotfication = async () => {
+    if (!useUserStore().isAdmin) return;
+    try {
+      await fetchApi({
+        url: '/admin/notifications',
+        method: 'POST'
+      });
+
+      addMessage({ message: 'Notification envoyée', type: 'success' });
+    } catch (error) {
+      addMessage({ message: error.data.message, type: 'error' });
+    }
+  }
+
   const getMessages = computed(() => messages.value);
   const isSocketConnected = computed(() => isConnected.value);
   return {
     getMessages,
     isSocketConnected,
+    sendBeRealNotfication,
     addMessage,
   };
 });

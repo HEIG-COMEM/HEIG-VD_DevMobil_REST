@@ -1,8 +1,8 @@
 <script setup>
+import { ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
 import TheNavbar from '@/components/TheNavbar.vue';
 import TheHeader from '@/components/TheHeader.vue';
-import { useRoute } from 'vue-router';
-import { ref, watch } from 'vue';
 
 const route = useRoute();
 
