@@ -44,6 +44,8 @@ export const usePublicationsStore = defineStore('publications', () => {
   const isLoading = computed(() => loading.value);
 
   const loadMorePublications = async () => {
+    console.log('loadMorePublications');
+
     if (hasMore.value) {
       page.value++;
       await loadCurrentPublications();
