@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useUserStore } from '@/stores/userStore';
 
 const handleSocketMessage = (data) => {
@@ -37,28 +37,41 @@ const handleSocketMessage = (data) => {
 
 export const useNotificationsStore = defineStore('Notifications', () => {
 
-  const socket = new WebSocket(import.meta.env.VITE_WS_URL, [`Bearer`, `${useUserStore().getToken}`]);
 
   const SERVER_MESSAGE_PATTERN = /^\[Server\]/;
 
+  const socket = ref(null);
   const isConnected = ref(false);
   const messages = ref([]);
 
-  // Connection opened
-  socket.addEventListener("open", () => isConnected.value = true);
+  const initSocket = () => {
 
-  // Listen for messages
-  socket.addEventListener("message", (event) => {
-    if (SERVER_MESSAGE_PATTERN.test(event.data)) return;
+    // Close the socket if there is no token
+    if (!useUserStore().getToken) {
+      socket.value?.close();
+      return;
+    };
 
-    const message = handleSocketMessage(event.data);
-    messages.value.push({ message, type: 'info' });
-  });
+    socket.value = new WebSocket(import.meta.env.VITE_WS_URL, [`Bearer`, `${useUserStore().getToken}`]);
 
-  socket.addEventListener("close", (event) => {
-    console.log("Connection closed", event);
-    isConnected.value = false;
-  });
+    // Connection opened
+    socket.value.addEventListener("open", () => isConnected.value = true);
+
+    // Listen for messages
+    socket.value.addEventListener("message", (event) => {
+      if (SERVER_MESSAGE_PATTERN.test(event.data)) return;
+
+      const message = handleSocketMessage(event.data);
+      messages.value.push({ message, type: 'info' });
+    });
+
+    socket.value.addEventListener("close", (event) => {
+      console.log("Connection closed", event);
+      isConnected.value = false;
+    });
+  };
+  initSocket();
+  watch(() => useUserStore().getToken, () => initSocket());
 
   const addMessage = ({ message, type } = {
     type: 'info',
