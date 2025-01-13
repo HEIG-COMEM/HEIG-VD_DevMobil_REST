@@ -17,7 +17,7 @@ const props = defineProps({
 const emits = defineEmits(['count']);
 
 const data = ref([]);
-const hasMore = ref(false);
+const hasMore = ref(null);
 
 const title = computed(() => {
   return props.friendshipsStatus === 'accepted' ? 'Amis' : "Demandes d'amis";
@@ -52,6 +52,7 @@ const loadMore = () => loadMoreFriends(props.friendshipsStatus);
 </script>
 
 <template>
+  {{ hasMore }}
   <p class="mb-2 text-sm uppercase text-neutral-content">
     {{ title }} ({{ totalFriends }})
   </p>
