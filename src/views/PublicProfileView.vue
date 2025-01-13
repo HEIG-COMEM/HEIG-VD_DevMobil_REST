@@ -84,6 +84,8 @@ const askFriend = async () => {
       message: "Une erreur est survenue lors de l'ajout de l'ami",
       type: 'error',
     });
+  } finally {
+    fetchProfileAndStats();
   }
 };
 </script>
@@ -92,7 +94,7 @@ const askFriend = async () => {
   <main class="max-h-screen overflow-y-scroll pb-40 pt-6">
     <AppPublicProfile :profile :stats />
     <p class="mt-12 text-xl font-bold">BeReal récents :</p>
-    <template v-if="isFriend">
+    <template v-if="isFriend === 1">
       <div v-if="!lastPublications" class="mt-6 flex flex-row gap-4">
         <div class="skeleton aspect-[9/16] flex-grow"></div>
         <div class="skeleton aspect-[9/16] flex-grow"></div>
@@ -123,9 +125,14 @@ const askFriend = async () => {
       <div
         class="absolute left-0 top-0 flex h-full w-full items-center justify-center rounded-2xl bg-white/10 backdrop-blur-md"
       >
-        <button @click="askFriend()" class="btn btn-primary">
+        <button
+          @click="askFriend()"
+          class="btn btn-primary"
+          v-if="isFriend < 0"
+        >
           Ajouter en ami
         </button>
+        <span v-else>Demande envoyée</span>
       </div>
     </div>
   </main>

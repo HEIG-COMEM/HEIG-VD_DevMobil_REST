@@ -26,7 +26,7 @@ if (router.currentRoute.value.query.registered) {
 </script>
 
 <template>
-  <main class="max-h-screen overflow-y-scroll pb-40 pt-6">
+  <main class="max-h-screen overflow-y-scroll pb-40">
     <AppPublicationCard
       v-for="publication in publicationsStore.getPublications.data"
       :key="publication._id"
