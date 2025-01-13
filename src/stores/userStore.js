@@ -61,7 +61,8 @@ export const useUserStore = defineStore('user', () => {
     user.value = null;
     token.value = null;
     localStorage.removeItem('bereal_token');
-    router.push('/login');
+    // only redirect to /login if the user is on any page other than /login or /register
+    if (router.currentRoute.value.path !== '/login' && router.currentRoute.value.path !== '/register') router.push('/login');
   };
 
   const refreshUser = async () => await fetchUserData();
