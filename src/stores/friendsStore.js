@@ -103,12 +103,12 @@ export const useFriendsStore = defineStore('friends', () => {
 
     const metas = acceptedFriends.value.metas;
     console.log(metas?.['pagination-total-pages'], metas?.['pagination-page']);
-    return metas && metas['pagination-total-pages'] > metas['pagination-page'];
+    return metas && +metas['pagination-total-pages'] > +metas['pagination-page'];
   });
 
   const hasMorePendingFriends = computed(() => {
     const metas = pendingFriends.value.metas;
-    return metas && metas['pagination-total-pages'] > metas['pagination-page'];
+    return metas && +metas['pagination-total-pages'] > +metas['pagination-page'];
   });
 
   return {
