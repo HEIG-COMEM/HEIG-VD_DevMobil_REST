@@ -22,7 +22,14 @@ New users can register by creating an account to recover their data from any dev
 
 ### 3. Notifications
 
-The application sends a notification at a random time each day, inviting users to share a real-time photo.
+#### 3.1. Admin Notifications
+
+If connected as an admin user, you can send a notification to all users once a day.
+This notification will be displayed on the user's device as a push notification (trough OneSignal).
+
+#### 3.2. User Notifications
+
+The application features a **WebSocket notifications** system that sends real-time notifications to users when they receive a friend request, someone accepts their friend request, or someone comments on their post.
 
 ### 4. Dual Photo Capture
 
@@ -30,6 +37,8 @@ When users open the app after receiving the notification, both the front and rea
 
 - **Main Photo (Rear Camera)**: Shows what the user is doing.
 - **Selfie (Front Camera)**: Shows the user's reaction.
+
+The publication also captures the user's location.
 
 ### 5. News Feed with Infinite Scroll
 
@@ -43,21 +52,17 @@ Posts are visible only if the user has also shared a photo on the same day.
 ### 7. Friendship System
 
 - **Add Friends**: Users can send friend requests to other users.
+- **Accept/Decline Friend Requests**: Users can accept or decline friend requests. _A friend request must be accepted by the recipient to establish a friendship._
 - **Search for Friends**: A search feature allows users to find others in the app using their pseudonyms.
 - **Remove Friends**: Users can remove someone from their friends list.
 
 ### 8. User Profile
 
-Each user has a profile containing the following information:
+Each user has a public profile containing the following information:
 
 - **Profile Picture (PP)**: An image representing the user.
 - **Pseudonym**: A nickname chosen by each user when creating their account.
-- **Last Three BeReals**: The user's last three posts are visible on their profile, allowing others to see their recent activity.
-
-### 9. Notifications System
-
-- **Normal Notifications**: Standard push notifications are implemented using **OneSignal**, alerting users to events like friend requests or when it is time to post a new BeReal.
-- **WebSocket Notifications**: Real-time notifications are managed through WebSockets, enabling instant updates such as new comments on a user's post or live updates about friend activity. This ensures a highly responsive user experience.
+- **Last Three BeReals**: The user's last three posts are visible on their profile, allowing others to see their recent activity. _Only available if the viewing user is friends with the profile owner. Otherwise, a "add friend" button is displayed._
 
 ## Authors
 
