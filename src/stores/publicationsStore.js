@@ -19,10 +19,15 @@ export const usePublicationsStore = defineStore('publications', () => {
   const loading = ref(false);
 
   const _fetchPublications = async (page = 1, pageSize = 2) => {
+    console.log('fetching publications with page:', page, 'pageSize:', pageSize);
+
     loading.value = true;
     const { data, headers } = await fetchApi({
       url: `/publications?page=${page}&pageSize=${pageSize}`,
     });
+
+    console.log('publications fetched:', data);
+    console.log('publications headers:', headers);
 
     publications.value = {
       data: [...publications.value.data, ...data],
