@@ -31,9 +31,10 @@ When users open the app after receiving the notification, both the front and rea
 - **Main Photo (Rear Camera)**: Shows what the user is doing.
 - **Selfie (Front Camera)**: Shows the user's reaction.
 
-### 5. News Feed
+### 5. News Feed with Infinite Scroll
 
-Users can view their friends' posts in a news feed. Posts are visible only if the user also shares a photo on that day.
+The news feed displays the posts of a user's friends, updated dynamically through infinite scrolling. This feature ensures seamless navigation by continuously loading new posts as the user scrolls down, eliminating the need for manual page transitions.
+Posts are visible only if the user has also shared a photo on the same day.
 
 ### 6. Comments
 
@@ -52,6 +53,11 @@ Each user has a profile containing the following information:
 - **Profile Picture (PP)**: An image representing the user.
 - **Pseudonym**: A nickname chosen by each user when creating their account.
 - **Last Three BeReals**: The user's last three posts are visible on their profile, allowing others to see their recent activity.
+
+### 9. Notifications System
+
+- **Normal Notifications**: Standard push notifications are implemented using **OneSignal**, alerting users to events like friend requests or when it is time to post a new BeReal.
+- **WebSocket Notifications**: Real-time notifications are managed through WebSockets, enabling instant updates such as new comments on a user's post or live updates about friend activity. This ensures a highly responsive user experience.
 
 ## Authors
 
