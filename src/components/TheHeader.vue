@@ -1,9 +1,14 @@
 <script setup>
 import { onMounted } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faUser } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faBell } from '@fortawesome/free-solid-svg-icons';
+import { useUserStore } from '@/stores/userStore';
+import { useNotificationsStore } from '@/stores/notificationsStore';
 import TheApiStatusIndicator from '@/components/TheApiStatusIndicator.vue';
 import TheWSStatusIndicator from './TheWSStatusIndicator.vue';
+
+const userStore = useUserStore();
+const notificationsStore = useNotificationsStore();
 
 // set the width of the profile the same as the status
 const setProfileWidth = () => {
@@ -28,7 +33,15 @@ onMounted(() => {
       <TheApiStatusIndicator class="mr-2" />
       <TheWSStatusIndicator />
     </div>
-    <span>HEIG-VD - BeReal - Copy</span>
+    <div class="flex flex-col items-center justify-center gap-2 md:flex-row">
+      <span class="text-center">HEIG-VD - BeReal</span>
+      <FontAwesomeIcon
+        :icon="faBell"
+        class="cursor-pointer text-primary"
+        v-if="userStore.isAdmin"
+        @click="notificationsStore.sendBeRealNotfication()"
+      />
+    </div>
     <div class="profile flex flex-row items-center justify-center">
       <RouterLink to="/profile">
         <FontAwesomeIcon :icon="faUser" class="cursor-pointer" />

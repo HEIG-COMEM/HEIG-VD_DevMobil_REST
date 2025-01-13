@@ -1,5 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 import { useUserStore } from '@/stores/userStore';
 import { useNotificationsStore } from '@/stores/notificationsStore';
 import { useFetchApi } from '@/composables/useFetchApi';
@@ -77,6 +79,14 @@ const updateAccount = async () => {
   }
 };
 
+const logout = () => {
+  userStore.logout();
+  notificationsStore.addMessage({
+    message: 'Vous avez été déconnecté',
+    type: 'success',
+  });
+};
+
 const fetchUser = async () => {
   const { data } = await fetchApi({ url: 'auth/user' });
 
@@ -88,12 +98,12 @@ fetchUser();
 </script>
 
 <template>
-  <main class="max-h-screen overflow-y-scroll">
+  <main class="max-h-screen overflow-y-scroll pb-44 pt-6">
     <form
       @submit.prevent="updateAccount()"
-      class="prose mt-12 flex h-full flex-col justify-center gap-12"
+      class="mt-12 flex h-full flex-col justify-center gap-12"
     >
-      <div class="not-prose avatar justify-center">
+      <div class="avatar justify-center">
         <div
           class="relative w-24 rounded-full ring ring-primary ring-offset-2 ring-offset-base-100"
         >
@@ -106,7 +116,15 @@ fetchUser();
           />
         </div>
       </div>
-      <h1 class="text-center">Bonjour {{ userStore.getUser?.name }}</h1>
+      <div class="text-center">
+        <h1 class="mb-2 text-2xl font-bold">
+          Bonjour {{ userStore.getUser?.name }}
+        </h1>
+        <span @click="logout()" class="link cursor-pointer text-sm">
+          Se déconnecter
+          <FontAwesomeIcon :icon="faArrowRightFromBracket" />
+        </span>
+      </div>
       <div class="flex flex-col gap-4">
         <label class="input input-bordered flex items-center gap-2">
           <svg

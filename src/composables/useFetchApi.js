@@ -3,7 +3,6 @@ import { ref } from 'vue';
 const defaultHeaders = {
   'Content-Type': 'application/json',
   'X-Requested-With': 'XMLHttpRequest',
-  'Cache-Control': 'no-cache', // TODO: remove this line in production
   Accept: 'application/json',
 };
 
