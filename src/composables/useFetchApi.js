@@ -72,8 +72,6 @@ export function useFetchApi(baseUrl = null, additionalHeaders = {}) {
       })
         .then(res => {
           const headers = {};
-          console.log(...res.headers);
-
           res.headers.forEach((value, key) => {
             headers[key] = value;
           });
