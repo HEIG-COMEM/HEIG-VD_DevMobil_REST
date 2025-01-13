@@ -1,5 +1,6 @@
-import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
+import { defineStore } from 'pinia';
+import router from '@/router';
 import { useFetchApi } from '@/composables/useFetchApi';
 
 const { fetchApi } = useFetchApi(import.meta.env.VITE_API_URL);
@@ -60,6 +61,7 @@ export const useUserStore = defineStore('user', () => {
     user.value = null;
     token.value = null;
     localStorage.removeItem('bereal_token');
+    router.push('/login');
   };
 
   const refreshUser = async () => await fetchUserData();

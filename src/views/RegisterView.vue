@@ -19,7 +19,7 @@ const password = ref('');
 
 const isLoading = ref(false);
 
-const register = () => {
+const register = async () => {
   isLoading.value = true;
 
   if (!name.value || !email.value || !password.value) {
@@ -31,32 +31,33 @@ const register = () => {
     return;
   }
 
-  fetchApi({
-    url: '/auth/signup',
-    method: 'POST',
-    data: { name: name.value, email: email.value, password: password.value },
-  })
-    .then(data => {
-      if (!data.email) return;
+  try {
+    const signupResponse = await fetchApi({
+      url: '/auth/signup',
+      method: 'POST',
+      data: { name: name.value, email: email.value, password: password.value },
+    });
 
-      fetchApi({
-        url: '/auth/login',
-        method: 'POST',
-        data: { email: email.value, password: password.value },
-      }).then(data => {
-        const res = userStore.setToken(data.token);
-        if (res) {
-          router.replace({ name: 'home', query: { registered: true } });
-        }
-      });
-    })
-    .catch(err => {
-      notificationsStore.addMessage({
-        message: err.data.message,
-        type: 'error',
-      });
-    })
-    .finally(() => (isLoading.value = false));
+    if (!signupResponse.data.email) throw new Error('Une erreur est survenue');
+
+    const loginResponse = await fetchApi({
+      url: '/auth/login',
+      method: 'POST',
+      data: { email: email.value, password: password.value },
+    });
+
+    const res = userStore.setToken(loginResponse.data.token);
+    if (res) {
+      router.replace({ name: 'home', query: { registered: true } });
+    }
+  } catch (err) {
+    notificationsStore.addMessage({
+      message: err.data?.message || err.message,
+      type: 'error',
+    });
+  } finally {
+    isLoading.value = false;
+  }
 };
 </script>
 
