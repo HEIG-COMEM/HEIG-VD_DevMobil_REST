@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, onUnmounted, ref, defineProps, defineExpose, computed } from 'vue';
+import { onMounted, onUnmounted, ref, defineProps, defineExpose } from 'vue';
 
 const props = defineProps({
   resolution: {
@@ -56,17 +56,13 @@ const stream = ref(null);
 
 const constraints = props.constraints || {
   video: {
-    width: { ideal: props.resolution.height },
-    height: { ideal: props.resolution.width },
-    aspectRatio: props.resolution.height / props.resolution.width,
-    resizeMode: 'crop-and-scale',
+    width: props.resolution.width,
+    height: props.resolution.height,
     facingMode: props.facingMode,
     deviceId: {},
   },
   audio: false,
 };
-
-const ratio = computed(() => props.resolution.width / props.resolution.height);
 
 const devices = async (kinds = ['audioinput', 'videoinput']) => {
   const devices = await navigator.mediaDevices.enumerateDevices();
@@ -99,33 +95,6 @@ const start = async () => {
   }
 };
 
-// const snapshot = (
-//   resolution = props.resolution,
-//   type = 'image/png',
-//   quality,
-// ) => {
-//   if (!video.value) throw new Error('Video ref is null');
-//   if (!canvas.value) throw new Error('Canvas ref is null');
-
-//   const { width, height } = resolution;
-
-//   canvas.value.width = width;
-//   canvas.value.height = height;
-
-//   canvas.value.getContext('2d')?.drawImage(video.value, 0, 0, width, height);
-
-//   return new Promise(resolve => {
-//     canvas.value?.toBlob(
-//       blob => {
-//         emit('snapshot', blob);
-//         resolve(blob);
-//       },
-//       type,
-//       quality,
-//     );
-//   });
-// };
-
 const snapshot = (
   resolution = props.resolution,
   type = 'image/png',
@@ -136,47 +105,10 @@ const snapshot = (
 
   const { width, height } = resolution;
 
-  // Définir les dimensions du canvas selon la résolution cible
   canvas.value.width = width;
   canvas.value.height = height;
 
-  const videoWidth = video.value.videoWidth;
-  const videoHeight = video.value.videoHeight;
-
-  // Calculer le ratio cible et celui de la vidéo
-  const targetRatio = width / height;
-  const videoRatio = videoWidth / videoHeight;
-
-  let cropWidth, cropHeight, offsetX, offsetY;
-
-  if (videoRatio > targetRatio) {
-    // La vidéo est plus large que le ratio cible, on coupe sur la largeur
-    cropHeight = videoHeight;
-    cropWidth = videoHeight * targetRatio;
-    offsetX = (videoWidth - cropWidth) / 2;
-    offsetY = 0;
-  } else {
-    // La vidéo est plus haute que le ratio cible, on coupe sur la hauteur
-    cropWidth = videoWidth;
-    cropHeight = videoWidth / targetRatio;
-    offsetX = 0;
-    offsetY = (videoHeight - cropHeight) / 2;
-  }
-
-  // Dessiner la partie croppée de la vidéo dans le canvas
-  canvas.value
-    .getContext('2d')
-    ?.drawImage(
-      video.value,
-      offsetX,
-      offsetY,
-      cropWidth,
-      cropHeight,
-      0,
-      0,
-      width,
-      height,
-    );
+  canvas.value.getContext('2d')?.drawImage(video.value, 0, 0, width, height);
 
   return new Promise(resolve => {
     canvas.value?.toBlob(
@@ -235,14 +167,16 @@ defineExpose({
 </script>
 
 <template>
-  <div id="camera-container" class="relative aspect-[3/4] h-auto mx-auto min-h-20">
+  <div id="camera-container">
     <video
       autoplay
       ref="video"
       id="video"
       :class="{
-        'rounded-[2rem] scale-x-[-1] transform': props.facingMode === 'user',
+        'scale-x-[-1] transform': props.facingMode === 'user',
       }"
+      :height="`${resolution.height}px`"
+      :width="`${resolution.width}px`"
     ></video>
 
     <div id="slot-container">
@@ -254,12 +188,12 @@ defineExpose({
 
 <style scoped>
 #camera-container {
+  position: relative;
 }
 
 #video {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  aspect-ratio: 9 / 16;
 }
 
 #slot-container {
