@@ -2,6 +2,7 @@
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
 import { computed, ref } from 'vue';
+import AppPublicationComments from './AppPublicationComments.vue';
 
 const props = defineProps({
   publication: Object,
@@ -56,6 +57,7 @@ const smallCamera = computed(() => {
       <FontAwesomeIcon class="h-4 w-4 drop-shadow-lg" :icon="faEllipsis" />
       {{ locality }}
     </div>
+    <AppPublicationComments :publicationId="publication._id" />
   </div>
 </template>
 
