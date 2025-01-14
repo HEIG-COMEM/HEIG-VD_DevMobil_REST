@@ -52,7 +52,6 @@ const loadMore = () => loadMoreFriends(props.friendshipsStatus);
 </script>
 
 <template>
-  {{ hasMore }}
   <p class="mb-2 text-sm uppercase text-neutral-content">
     {{ title }} ({{ totalFriends }})
   </p>

@@ -27,8 +27,6 @@ export const useFriendsStore = defineStore('friends', () => {
       url: `/friends?page=${page}&pageSize=${pageSize}&status=${status}`,
     });
 
-    console.log(headers);
-
     if (status === 'accepted') {
       acceptedFriends.value = {
         data: [...acceptedFriends.value.data, ...data],
