@@ -17,7 +17,7 @@ const props = defineProps({
 const emits = defineEmits(['count']);
 
 const data = ref([]);
-const hasMore = ref(false);
+const hasMore = ref(null);
 
 const title = computed(() => {
   return props.friendshipsStatus === 'accepted' ? 'Amis' : "Demandes d'amis";

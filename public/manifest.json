@@ -1,0 +1,17 @@
+{
+  "lang": "fr",
+  "name": "BeReal - Copy",
+  "short_name": "BeReal",
+  "description": "Copie de BeReal dans le cadre d'un cours à la HEIG-VD",
+  "start_url": "/",
+  "background_color": "#121212",
+  "theme_color": "#121212",
+  "orientation": "portrait",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "/pwa-logo.png",
+      "sizes": "512x512"
+    }
+  ]
+}

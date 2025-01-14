@@ -46,7 +46,7 @@ fetchPublicationAndUser();
 </script>
 
 <template>
-  <main class="max-h-screen overflow-y-scroll">
+  <main class="max-h-screen overflow-y-scroll pb-44 pt-6">
     <div
       v-if="user"
       class="flex flex-row items-center justify-between gap-2 p-2"

@@ -55,6 +55,7 @@ export const useUserStore = defineStore('user', () => {
   const getToken = computed(() => token.value);
   const getUser = computed(() => user.value);
 
+  const isAdmin = computed(() => user.value?.role === 'admin');
   const isAuthenticated = computed(() => !!token.value);
 
   const logout = () => {
@@ -73,6 +74,7 @@ export const useUserStore = defineStore('user', () => {
     refreshUser,
     getUser,
     isAuthenticated,
+    isAdmin,
     logout,
   };
 });

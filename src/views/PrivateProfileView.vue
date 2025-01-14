@@ -98,12 +98,12 @@ fetchUser();
 </script>
 
 <template>
-  <main class="max-h-screen overflow-y-scroll">
+  <main class="max-h-screen overflow-y-scroll pb-44 pt-6">
     <form
       @submit.prevent="updateAccount()"
-      class="prose mt-12 flex h-full flex-col justify-center gap-12"
+      class="mt-12 flex h-full flex-col justify-center gap-12"
     >
-      <div class="not-prose avatar justify-center">
+      <div class="avatar justify-center">
         <div
           class="relative w-24 rounded-full ring ring-primary ring-offset-2 ring-offset-base-100"
         >
@@ -117,8 +117,10 @@ fetchUser();
         </div>
       </div>
       <div class="text-center">
-        <h1>Bonjour {{ userStore.getUser?.name }}</h1>
-        <span @click="logout()" class="link cursor-pointer">
+        <h1 class="mb-2 text-2xl font-bold">
+          Bonjour {{ userStore.getUser?.name }}
+        </h1>
+        <span @click="logout()" class="link cursor-pointer text-sm">
           Se déconnecter
           <FontAwesomeIcon :icon="faArrowRightFromBracket" />
         </span>

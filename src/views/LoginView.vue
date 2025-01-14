@@ -44,9 +44,9 @@ const login = () => {
 <template>
   <form
     @submit.prevent="login()"
-    class="prose flex h-[80vh] flex-col justify-center gap-12"
+    class="flex h-[80vh] flex-col justify-center gap-12"
   >
-    <h1 class="text-center">Connexion</h1>
+    <h1 class="text-center text-4xl font-bold">Connexion</h1>
     <div class="flex flex-col gap-4">
       <label class="input input-bordered flex items-center gap-2">
         <svg

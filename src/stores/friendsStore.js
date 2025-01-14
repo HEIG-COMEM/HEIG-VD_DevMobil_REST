@@ -97,13 +97,15 @@ export const useFriendsStore = defineStore('friends', () => {
   const acceptFriend = async (friendshipId) => await updateFriendStatus(friendshipId, 'accepted');
   const declineFriend = async (friendshipId) => await updateFriendStatus(friendshipId, 'denied');
 
-  const hasMoreFriends = (status) => {
-    const metas = status === 'accepted' ? acceptedFriends.value.metas : pendingFriends.value.metas;
-    return metas && metas['pagination-total-pages'] > metas['pagination-page'];
-  };
+  const hasMoreAcceptedFriends = computed(() => {
+    const metas = acceptedFriends.value.metas;
+    return metas && +metas['pagination-total-pages'] > +metas['pagination-page'];
+  });
 
-  const hasMoreAcceptedFriends = computed(() => hasMoreFriends('accepted'));
-  const hasMorePendingFriends = computed(() => hasMoreFriends('pending'));
+  const hasMorePendingFriends = computed(() => {
+    const metas = pendingFriends.value.metas;
+    return metas && +metas['pagination-total-pages'] > +metas['pagination-page'];
+  });
 
   return {
     getAcceptedFriends,

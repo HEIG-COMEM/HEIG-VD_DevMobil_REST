@@ -1,7 +1,7 @@
 <script setup>
 import AppProfilePicture from './AppProfilePicture.vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faComment, faEllipsis } from '@fortawesome/free-solid-svg-icons';
+import { faComment } from '@fortawesome/free-solid-svg-icons';
 import { computed, ref, onMounted } from 'vue';
 
 const props = defineProps({
@@ -54,7 +54,7 @@ const smallCamera = computed(() => {
 </script>
 
 <template>
-  <div class="p-1">
+  <div class="px-8 pb-8">
     <div
       class="flex flex-row content-center items-center justify-between gap-2 p-2"
     >
