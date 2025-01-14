@@ -1,7 +1,7 @@
 <script setup>
 import AppProfilePicture from './AppProfilePicture.vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faComment, faEllipsis } from '@fortawesome/free-solid-svg-icons';
+import { faComment } from '@fortawesome/free-solid-svg-icons';
 import { computed, ref, onMounted } from 'vue';
 
 const props = defineProps({
@@ -91,7 +91,7 @@ const smallCamera = computed(() => {
 
       <RouterLink :to="`/publications/${publication._id}`">
         <FontAwesomeIcon
-          class="absolute bottom-4 right-4 h-6 w-6 rounded-full drop-shadow-lg"
+          class="absolute bottom-4 right-4 h-6 w-6 rounded-full text-white drop-shadow-lg"
           :icon="faComment"
         />
       </RouterLink>
