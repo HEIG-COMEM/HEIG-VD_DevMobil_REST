@@ -1,7 +1,8 @@
 <script setup>
+import { computed, ref } from 'vue';
+import { reverseGeocoding } from '@/utils/reverse-geocoding';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faLocationArrow } from '@fortawesome/free-solid-svg-icons';
-import { computed, ref } from 'vue';
 import AppPublicationComments from './AppPublicationComments.vue';
 
 const props = defineProps({
@@ -9,16 +10,10 @@ const props = defineProps({
 });
 
 const locality = ref('');
-const getFormatedLocation = () => {
+const getFormatedLocation = async () => {
   const lat = props.publication.location.coordinates[1];
   const long = props.publication.location.coordinates[0];
-  const url = `https://api-bdc.net/data/reverse-geocode-client?latitude=${lat}&longitude=${long}&localityLanguage=fr`;
-
-  fetch(url)
-    .then(response => response.json())
-    .then(data => {
-      locality.value = data.locality;
-    });
+  locality.value = await reverseGeocoding(lat, long);
 };
 getFormatedLocation();
 

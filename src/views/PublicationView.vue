@@ -1,11 +1,12 @@
 <script setup>
 import { ref, computed } from 'vue';
+import { useRoute } from 'vue-router';
+import { formatDateLong } from '@/utils/date';
 import AppPublicationView from '@/components/AppPublicationView.vue';
 import { useFetchApi } from '@/composables/useFetchApi';
 import { useUserStore } from '@/stores/userStore';
-import { useRoute } from 'vue-router';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faChevronLeft, faEllipsis } from '@fortawesome/free-solid-svg-icons';
+import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 
 const route = useRoute();
 const userStore = useUserStore();
@@ -32,15 +33,9 @@ const fetchPublicationAndUser = async () => {
   }
 };
 
-const formatedDate = computed(() => {
-  const date = new Date(publication.value.createdAt);
-
-  return date.toDateString() === new Date().toDateString()
-    ? `Aujourd'hui à ${date.toLocaleTimeString()}`
-    : `Il y a ${Math.floor(
-        (new Date() - date) / (1000 * 60 * 60 * 24),
-      )} jours à ${date.toLocaleTimeString()}`;
-});
+const formatedDate = computed(() =>
+  formatDateLong(publication.value?.createdAt),
+);
 
 fetchPublicationAndUser();
 </script>

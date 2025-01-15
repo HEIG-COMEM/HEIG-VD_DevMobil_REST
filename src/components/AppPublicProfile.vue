@@ -1,13 +1,10 @@
 <script setup>
+import { formatDate } from '@/utils/date';
+
 defineProps({
   profile: Object,
   stats: Object,
 });
-
-const formattedDate = date => {
-  const options = { year: 'numeric', month: 'long', day: 'numeric' };
-  return new Date(date).toLocaleDateString('fr-FR', options);
-};
 </script>
 
 <template>
@@ -23,7 +20,12 @@ const formattedDate = date => {
         </div>
         <h1 class="text-2xl font-bold">{{ profile.name }}</h1>
         <p class="text-sm text-gray-500">
-          Membre depuis le {{ formattedDate(profile.createdAt) }}
+          Membre depuis le
+          {{
+            formatDate(profile.createdAt, {
+              month: 'long',
+            })
+          }}
         </p>
       </div>
       <div class="stats stats-vertical shadow lg:stats-horizontal">

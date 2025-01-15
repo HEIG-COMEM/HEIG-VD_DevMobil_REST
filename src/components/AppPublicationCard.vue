@@ -1,39 +1,26 @@
 <script setup>
-import AppProfilePicture from './AppProfilePicture.vue';
+import { computed, ref } from 'vue';
+import { formatDateLong } from '@/utils/date';
+import { reverseGeocoding } from '@/utils/reverse-geocoding';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faComment } from '@fortawesome/free-solid-svg-icons';
-import { computed, ref, onMounted } from 'vue';
+import AppProfilePicture from './AppProfilePicture.vue';
 
 const props = defineProps({
   publication: Object,
 });
 
-const formatedDate = computed(() => {
-  const date = new Date(props.publication.createdAt);
-
-  return date.toDateString() === new Date().toDateString()
-    ? `Aujourd'hui à ${date.toLocaleTimeString()}`
-    : `Il y a ${Math.floor(
-        (new Date() - date) / (1000 * 60 * 60 * 24),
-      )} jours à ${date.toLocaleTimeString()}`;
-});
+const formatedDate = computed(() =>
+  formatDateLong(props.publication.createdAt),
+);
 
 const locality = ref('');
-const getFormatedLocation = () => {
+const getFormatedLocation = async () => {
   const lat = props.publication.location.coordinates[1];
   const long = props.publication.location.coordinates[0];
-  const url = `https://api-bdc.net/data/reverse-geocode-client?latitude=${lat}&longitude=${long}&localityLanguage=fr`;
-
-  fetch(url)
-    .then(response => response.json())
-    .then(data => {
-      locality.value = data.locality;
-    });
+  locality.value = await reverseGeocoding(lat, long);
 };
-
-onMounted(() => {
-  getFormatedLocation();
-});
+getFormatedLocation();
 
 const showFrontCamera = ref(true);
 const toggleCamera = () => {
