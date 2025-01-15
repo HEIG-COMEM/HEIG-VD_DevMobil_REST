@@ -81,7 +81,7 @@ export const useNotificationsStore = defineStore('Notifications', () => {
     if (!useUserStore().isAdmin) return;
     try {
       await fetchApi({
-        url: '/admin/notifications',
+        url: '/notifications',
         method: 'POST'
       });
 
