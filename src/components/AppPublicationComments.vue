@@ -1,6 +1,7 @@
 <script setup>
 import { useFetchApi } from '@/composables/useFetchApi';
 import { useUserStore } from '@/stores/userStore';
+import AppPublicationCommentsList from './AppPublicationCommentsList.vue';
 import { computed, ref, useTemplateRef } from 'vue';
 
 const props = defineProps({
@@ -36,25 +37,26 @@ const fetchComments = async () => {
 
 fetchComments();
 
-const topLevelComments = computed(() =>
-  comments.value.filter(comment => !comment.parentComment),
-);
+const nestedComments = computed(() => {
+  const commentMap = new Map();
+  const roots = [];
 
-const childComments = computed(() =>
-  comments.value.filter(comment => comment.parentComment),
-);
-
-const allComments = computed(() => {
-  const allComments = [];
-  topLevelComments.value.forEach(comment => {
-    allComments.push(comment);
-    childComments.value.forEach(childComment => {
-      if (childComment.parentComment._id === comment._id) {
-        allComments.push(childComment);
-      }
-    });
+  comments.value.forEach(comment => {
+    commentMap.set(comment._id, { ...comment, children: [] });
   });
-  return allComments;
+
+  commentMap.forEach(comment => {
+    if (comment.parentComment) {
+      const parent = commentMap.get(comment.parentComment._id);
+      if (parent) {
+        parent.children.push(comment);
+      }
+    } else {
+      roots.push(comment);
+    }
+  });
+
+  return roots;
 });
 
 const handleDelete = () => {
@@ -95,36 +97,10 @@ const submitComment = async () => {
 </script>
 <template>
   <div v-if="comments.length" class="pb-52">
-    <div
-      v-for="(comment, index) in allComments"
-      class="chat chat-start mb-2"
-      :key="comment._id"
-    >
-      <div class="avatar chat-image">
-        <div class="w-10 rounded-full">
-          <img alt="" :src="comment.user.profilePicture.url" />
-        </div>
-      </div>
-      <div class="chat-header">
-        {{ comment.user.name }}
-        <time class="text-xs opacity-50">{{ comment.createdAt }}</time>
-      </div>
-      <p class="chat-bubble" v-if="!comment.parentComment">
-        {{ comment.content }}
-      </p>
-      <div class="chat-bubble" v-else>
-        <div>
-          <RouterLink
-            :to="`/users/${allComments[index - 1].user._id}`"
-            class="link link-primary mr-1"
-            >@{{ allComments[index - 1].user.name }}</RouterLink
-          >{{ comment.content }}
-        </div>
-      </div>
-      <button class="chat-footer opacity-50" @click="handleReply(comment)">
-        Répondre
-      </button>
-    </div>
+    <AppPublicationCommentsList
+      :comments="nestedComments"
+      @reply="handleReply($event)"
+    />
     <div
       class="absolute bottom-16 left-0 flex w-full items-center justify-between gap-2 bg-black px-2 pb-5 pt-2"
     >
@@ -137,6 +113,7 @@ const submitComment = async () => {
           v-model="newComment"
           ref="commentInput"
           @keydown.delete="handleDelete()"
+          @keydown.enter="submitComment()"
         />
       </label>
       <button
