@@ -58,7 +58,7 @@ fetchPublicationAndUser();
         <p>BeReal de {{ user.name }}</p>
         <p class="text-xs text-gray-500">{{ formatedDate }}</p>
       </div>
-      <FontAwesomeIcon class="h-6 w-6 drop-shadow-lg" :icon="faEllipsis" />
+      <div></div>
     </div>
     <AppPublicationView v-if="publication" :publication />
   </main>
