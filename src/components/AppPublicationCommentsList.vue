@@ -1,4 +1,10 @@
 <script setup>
+import { formatDate } from '@/utils/date';
+import { useUserStore } from '@/stores/userStore';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
+const userStore = useUserStore();
+
 defineProps({
   comments: {
     type: Array,
@@ -10,7 +16,7 @@ defineProps({
   },
 });
 
-defineEmits(['reply']);
+defineEmits(['reply', 'delete']);
 </script>
 
 <template>
@@ -23,7 +29,16 @@ defineEmits(['reply']);
       </div>
       <div class="chat-header">
         {{ comment.user.name }}
-        <time class="text-xs opacity-50">{{ comment.createdAt }}</time>
+        <time class="text-xs opacity-50">{{
+          formatDate(comment.createdAt)
+        }}</time>
+        <button
+          class="btn btn-ghost btn-sm"
+          v-if="userStore.getUser.id === comment.user._id"
+          @click="$emit('delete', comment._id)"
+        >
+          <FontAwesomeIcon :icon="faTrash" />
+        </button>
       </div>
       <p class="chat-bubble" v-if="!parentComment">
         {{ comment.content }}
@@ -47,6 +62,7 @@ defineEmits(['reply']);
       :parentComment="comment"
       :key="comment._id"
       @reply="$emit('reply', $event)"
+      @delete="$emit('delete', $event)"
     />
   </template>
 </template>

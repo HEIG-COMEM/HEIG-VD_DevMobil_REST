@@ -1,8 +1,8 @@
 <script setup>
-import { useFetchApi } from '@/composables/useFetchApi';
-import { useUserStore } from '@/stores/userStore';
-import AppPublicationCommentsList from './AppPublicationCommentsList.vue';
 import { computed, ref, useTemplateRef } from 'vue';
+import { useUserStore } from '@/stores/userStore';
+import { useFetchApi } from '@/composables/useFetchApi';
+import AppPublicationCommentsList from './AppPublicationCommentsList.vue';
 
 const props = defineProps({
   publicationId: {
@@ -94,12 +94,29 @@ const submitComment = async () => {
     loading.value = false;
   }
 };
+
+const deleteComment = async commentId => {
+  loading.value = true;
+  try {
+    await fetchApi({
+      url: `/publications/${props.publicationId}/comments/${commentId}`,
+      method: 'DELETE',
+    });
+
+    fetchComments();
+  } catch (error) {
+    console.error(error);
+  } finally {
+    loading.value = false;
+  }
+};
 </script>
 <template>
   <div v-if="comments.length" class="pb-52">
     <AppPublicationCommentsList
       :comments="nestedComments"
       @reply="handleReply($event)"
+      @delete="deleteComment($event)"
     />
     <div
       class="absolute bottom-16 left-0 flex w-full items-center justify-between gap-2 bg-black px-2 pb-5 pt-2"
