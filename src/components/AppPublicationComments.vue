@@ -59,10 +59,31 @@ const toggleSendButton = () => {
   isSendEnabled.value = newComment.value.trim().length > 0;
 };
 
-const addReplyTag = username => {
-  if (!newComment.value.includes(`@${username}`)) {
-    newComment.value = `${newComment.value.trim()} @${username} `;
+const replyToComment = comment => {
+  replyToUser.value = comment.user._id;
+  newComment.value = `@${comment.user.name} `;
+  toggleSendButton();
+};
+
+// dynamic auto suggestion for user names when writting "@" in the comment field text
+const autoSuggestUser = () => {
+  const comment = newComment.value;
+  const atSignIndex = comment.lastIndexOf('@');
+  if (atSignIndex === -1) {
+    return;
   }
+  const search = comment.slice(atSignIndex + 1);
+  const user = allComments.value.find(comment =>
+    comment.user.name.toLowerCase().startsWith(search.toLowerCase()),
+  );
+  if (user) {
+    replyToUser.value = user.user._id;
+  }
+};
+
+const handleInput = () => {
+  toggleSendButton();
+  autoSuggestUser();
 };
 
 const submitComment = async () => {
@@ -85,7 +106,7 @@ const submitComment = async () => {
 };
 </script>
 <template>
-  <div v-if="comments.length" class="pb-28">
+  <div v-if="comments.length" class="pb-52">
     <div
       v-for="(comment, index) in allComments"
       class="chat chat-start mb-2"
@@ -114,13 +135,15 @@ const submitComment = async () => {
       </div>
       <button class="chat-footer opacity-50">Répondre</button>
     </div>
-    <div class="bottom-0 mb-28 flex items-center space-x-2 border-t p-2">
+    <div
+      class="absolute bottom-16 left-0 flex w-full items-center justify-between gap-2 bg-black px-2 pb-5 pt-2"
+    >
       <input
-        v-model="newComment"
-        @input="toggleSendButton"
+        class="w-full border-none bg-transparent text-white"
         type="text"
-        class="input input-bordered flex-1"
-        placeholder="Écrivez un commentaire..."
+        placeholder="Écrivez un commentaire"
+        v-model="newComment"
+        @input="handleInput"
       />
       <button
         class="btn btn-primary"

@@ -1,6 +1,6 @@
 <script setup>
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
+import { faLocationArrow } from '@fortawesome/free-solid-svg-icons';
 import { computed, ref } from 'vue';
 import AppPublicationComments from './AppPublicationComments.vue';
 
@@ -54,7 +54,7 @@ const smallCamera = computed(() => {
       <img class="rounded-lg object-cover" :src="bigCamera" alt="publication" />
     </div>
     <div class="badge badge-neutral badge-lg gap-2">
-      <FontAwesomeIcon class="h-4 w-4 drop-shadow-lg" :icon="faEllipsis" />
+      <FontAwesomeIcon class="h-4 w-4 drop-shadow-lg" :icon="faLocationArrow" />
       {{ locality }}
     </div>
     <AppPublicationComments :publicationId="publication._id" />
