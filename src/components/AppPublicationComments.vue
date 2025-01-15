@@ -112,7 +112,7 @@ const deleteComment = async commentId => {
 };
 </script>
 <template>
-  <div v-if="comments.length" class="pb-52">
+  <div v-if="comments.length" class="pb-12">
     <AppPublicationCommentsList
       :comments="nestedComments"
       @reply="handleReply($event)"
