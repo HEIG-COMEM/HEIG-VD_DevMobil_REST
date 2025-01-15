@@ -1,62 +1,144 @@
 <script setup>
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
+import { useFetchApi } from '@/composables/useFetchApi';
+import { useUserStore } from '@/stores/userStore';
 import { computed, ref } from 'vue';
 
 const props = defineProps({
-  publication: Object,
+  publicationId: {
+    type: String,
+    required: true,
+  },
 });
 
-const locality = ref('');
-const getFormatedLocation = () => {
-  const lat = props.publication.location.coordinates[1];
-  const long = props.publication.location.coordinates[0];
-  const url = `https://api-bdc.net/data/reverse-geocode-client?latitude=${lat}&longitude=${long}&localityLanguage=fr`;
+const userStore = useUserStore();
 
-  fetch(url)
-    .then(response => response.json())
-    .then(data => {
-      locality.value = data.locality;
+const comments = ref([]);
+const newComment = ref('');
+const isSendEnabled = ref(false);
+const replyToUser = ref('');
+
+const { fetchApi } = useFetchApi(import.meta.env.VITE_API_URL, {
+  Authorization: `Bearer ${userStore.getToken}`,
+});
+
+const fetchComments = async () => {
+  try {
+    const response = await fetchApi({
+      url: `/publications/${props.publicationId}/comments`,
     });
+    comments.value = response.data;
+  } catch (error) {
+    console.error(error);
+  }
 };
-getFormatedLocation();
 
-const showFrontCamera = ref(true);
-const toggleCamera = () => (showFrontCamera.value = !showFrontCamera.value);
+fetchComments();
 
-const bigCamera = computed(() => {
-  return showFrontCamera.value
-    ? props.publication.frontCamera.url
-    : props.publication.backCamera.url;
+const topLevelComments = computed(() =>
+  comments.value.filter(comment => !comment.parentComment),
+);
+
+const childComments = computed(() =>
+  comments.value.filter(comment => comment.parentComment),
+);
+
+const allComments = computed(() => {
+  const allComments = [];
+  topLevelComments.value.forEach(comment => {
+    allComments.push(comment);
+    childComments.value.forEach(childComment => {
+      if (childComment.parentComment._id === comment._id) {
+        allComments.push(childComment);
+      }
+    });
+  });
+  return allComments;
 });
 
-const smallCamera = computed(() => {
-  return showFrontCamera.value
-    ? props.publication.backCamera.url
-    : props.publication.frontCamera.url;
-});
+const toggleSendButton = () => {
+  isSendEnabled.value = newComment.value.trim().length > 0;
+};
+
+const addReplyTag = username => {
+  if (!newComment.value.includes(`@${username}`)) {
+    newComment.value = `${newComment.value.trim()} @${username} `;
+  }
+};
+
+const submitComment = async () => {
+  try {
+    const payload = {
+      content: newComment.value.trim(),
+      parentComment: replyToUser.value || null,
+    };
+    await fetchApi({
+      url: `/publications/${props.publicationId}/comments`,
+      method: 'POST',
+      data: payload,
+    });
+    newComment.value = '';
+    isSendEnabled.value = false;
+    fetchComments();
+  } catch (error) {
+    console.error(error);
+  }
+};
 </script>
-
 <template>
-  <div class="flex flex-col items-center gap-4 p-1">
-    <div class="relative flex w-1/2 flex-col items-center gap-2">
-      <div
-        class="absolute left-4 top-4 h-32 cursor-pointer rounded-lg bg-white shadow-lg"
-        @click="toggleCamera()"
-      >
-        <img
-          class="h-full w-full rounded-lg border border-black object-cover"
-          :src="smallCamera"
-          alt="publication"
-        />
+  <div v-if="comments.length" class="pb-28">
+    <div
+      v-for="(comment, index) in allComments"
+      class="chat chat-start mb-2"
+      :key="comment._id"
+    >
+      <div class="avatar chat-image">
+        <div class="w-10 rounded-full">
+          <img alt="" :src="comment.user.profilePicture.url" />
+        </div>
       </div>
-      <img class="rounded-lg object-cover" :src="bigCamera" alt="publication" />
+      <div class="chat-header">
+        {{ comment.user.name }}
+        <time class="text-xs opacity-50">{{ comment.createdAt }}</time>
+      </div>
+      <p class="chat-bubble" v-if="!comment.parentComment">
+        {{ comment.content }}
+      </p>
+      <div class="chat-bubble" v-else>
+        <div>
+          <RouterLink
+            :to="`/users/${allComments[index - 1].user._id}`"
+            class="link link-primary mr-1"
+            >@{{ allComments[index - 1].user.name }}</RouterLink
+          >{{ comment.content }}
+        </div>
+      </div>
+      <button class="chat-footer opacity-50">Répondre</button>
     </div>
-    <div class="badge badge-neutral badge-lg gap-2">
-      <FontAwesomeIcon class="h-4 w-4 drop-shadow-lg" :icon="faEllipsis" />
-      {{ locality }}
+    <div class="bottom-0 mb-28 flex items-center space-x-2 border-t p-2">
+      <input
+        v-model="newComment"
+        @input="toggleSendButton"
+        type="text"
+        class="input input-bordered flex-1"
+        placeholder="Écrivez un commentaire..."
+      />
+      <button
+        class="btn btn-primary"
+        :disabled="!isSendEnabled"
+        @click="submitComment"
+      >
+        Envoyer
+      </button>
     </div>
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+:deep(.chat-bubble::before) {
+  content: none;
+}
+
+.chat-reply {
+  padding-left: 50px;
+}
+</style>
