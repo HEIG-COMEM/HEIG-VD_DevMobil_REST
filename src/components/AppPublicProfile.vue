@@ -28,7 +28,7 @@ defineProps({
           }}
         </p>
       </div>
-      <div class="stats stats-vertical shadow lg:stats-horizontal">
+      <div class="stats stats-vertical shadow md:stats-horizontal">
         <div class="stat">
           <div class="stat-title">Publications</div>
           <div class="stat-value">{{ stats.publications }}</div>
