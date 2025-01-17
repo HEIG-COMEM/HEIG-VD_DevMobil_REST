@@ -52,7 +52,7 @@ const smallCamera = computed(() => {
       <FontAwesomeIcon class="h-4 w-4 drop-shadow-lg" :icon="faLocationArrow" />
       {{ locality }}
     </div>
-    <AppPublicationComments :publicationId="publication._id" />
+    <AppPublicationComments />
   </div>
 </template>
 
