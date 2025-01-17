@@ -19,7 +19,7 @@ const isFriend = computed(() => profile.value?.isFriend);
 
 watchEffect(() => {
   if (!userStore.getUser) return;
-  if (userStore.getUser.id === id) router.push('/profile');
+  if (userStore.getUser.id === id) router.replace('/profile');
 });
 
 const { fetchApi } = useFetchApi(import.meta.env.VITE_API_URL, {
