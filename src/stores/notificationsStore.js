@@ -93,10 +93,18 @@ export const useNotificationsStore = defineStore('Notifications', () => {
 
   const getMessages = computed(() => messages.value);
   const isSocketConnected = computed(() => isConnected.value);
+
+  const $reset = () => {
+    socket.value?.close();
+    isConnected.value = false;
+    messages.value = [];
+  };
+
   return {
     getMessages,
     isSocketConnected,
     sendBeRealNotfication,
     addMessage,
+    $reset,
   };
 });

@@ -83,6 +83,13 @@ export const usePublicationStore = defineStore('publication', () => {
   const getOwner = computed(() => owner.value);
   const getComments = computed(() => comments.value);
 
+  const $reset = () => {
+    publicationId.value = null;
+    publication.value = null;
+    owner.value = null;
+    comments.value = [];
+  }
+
   return {
     getPublication,
     getOwner,
@@ -90,5 +97,6 @@ export const usePublicationStore = defineStore('publication', () => {
     setPublicationId,
     postNewComment,
     deleteComment,
+    $reset,
   };
 });

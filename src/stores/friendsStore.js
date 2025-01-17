@@ -107,6 +107,19 @@ export const useFriendsStore = defineStore('friends', () => {
     return metas && +metas['pagination-total-pages'] > +metas['pagination-page'];
   });
 
+  const $reset = () => {
+    acceptedFriends.value = {
+      data: [],
+      metas: null,
+    };
+    pendingFriends.value = {
+      data: [],
+      metas: null,
+    };
+    acceptedPage.value = 1;
+    pendingPage.value = 1;
+  }
+
   return {
     getAcceptedFriends,
     getPendingFriends,
@@ -116,5 +129,6 @@ export const useFriendsStore = defineStore('friends', () => {
     deleteFriend,
     acceptFriend,
     declineFriend,
+    $reset,
   };
 });
