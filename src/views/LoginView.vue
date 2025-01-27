@@ -8,7 +8,7 @@ import { useFetchApi } from '@/composables/useFetchApi';
 const router = useRouter();
 
 const userStore = useUserStore();
-userStore.logout();
+userStore.getToken ? userStore.logout() : null;
 const notificationsStore = useNotificationsStore();
 
 const { fetchApi } = useFetchApi(import.meta.env.VITE_API_URL);

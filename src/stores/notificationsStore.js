@@ -106,10 +106,11 @@ export const useNotificationsStore = defineStore('Notifications', () => {
   const getMessages = computed(() => messages.value);
   const isSocketConnected = computed(() => isConnected.value);
 
-  const $reset = () => {
+  const $reset = (reason) => {
     socket.value?.close();
     isConnected.value = false;
     messages.value = [];
+    reason ? addMessage({ message: reason, type: 'error' }) : null;
   };
 
   return {

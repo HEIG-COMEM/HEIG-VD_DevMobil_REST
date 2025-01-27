@@ -47,12 +47,6 @@ const arePubVisible = ref(false);
 onMounted(async () => {
   arePubVisible.value = await publicationStore.hasAlreadyPost();
 });
-
-// go to camera page
-const router = () => {
-  router.push({ name: 'Camera' });
-};
-
 </script>
 
 <template>
@@ -76,7 +70,7 @@ const router = () => {
     </div>
     <div class="relative">
       <div
-        class="overflow-hidden absolute ml-4 mt-4 h-[30%] z-[1] aspect-3/4 cursor-pointer rounded-lg bg-white shadow-lg"
+        class="absolute z-[1] ml-4 mt-4 aspect-3/4 h-[30%] cursor-pointer overflow-hidden rounded-lg bg-white shadow-lg"
         @click="toggleCamera()"
       >
         <img
@@ -87,7 +81,7 @@ const router = () => {
         />
       </div>
       <div
-        class="overflow-hidden w-full rounded-[1.25rem] aspect-3/4"
+        class="aspect-3/4 w-full overflow-hidden rounded-[1.25rem]"
         @click="toggleCamera()"
       >
         <img
@@ -97,32 +91,22 @@ const router = () => {
           alt="publication"
         />
       </div>
-      <RouterLink
-        :to="`/publications/${publication._id}`"
-        v-if="arePubVisible"
-      >
+      <RouterLink :to="`/publications/${publication._id}`" v-if="arePubVisible">
         <FontAwesomeIcon
           class="absolute bottom-4 right-4 h-6 w-6 rounded-full text-white drop-shadow-lg"
           :icon="faComment"
         />
       </RouterLink>
       <div
-        class="text-white absolute w-full h-full top-0 right-0 z-30 flex flex-col gap-4 bg-none justify-center"
+        class="absolute right-0 top-0 z-10 flex h-full w-full flex-col items-center justify-center gap-4 bg-none text-white"
         v-if="!arePubVisible"
       >
-        <FontAwesomeIcon
-          class="text-4xl mx-auto"
-          :icon="faEyeSlash"
-        />
+        <FontAwesomeIcon class="mx-auto text-4xl" :icon="faEyeSlash" />
         <div class="text-center">
           <p><strong>Poste pour voir</strong></p>
           <p>Pour voir les BeReal de tes amis, poste le tien.</p>
         </div>
-        <RouterLink
-          to="/camera"
-          class="mx-auto btn bg-white w-4/5 text-black border-none"
-          @click="router"
-        >
+        <RouterLink to="/camera" class="btn btn-wide">
           Poste un BeReal.
         </RouterLink>
       </div>
