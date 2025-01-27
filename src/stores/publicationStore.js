@@ -15,6 +15,7 @@ export const usePublicationStore = defineStore('publication', () => {
   const publication = ref(null);
   const owner = ref(null);
   const comments = ref([]);
+  const lastPublicationDate = ref(null);
 
   const fetchPublication = async () => {
     try {
@@ -69,6 +70,8 @@ export const usePublicationStore = defineStore('publication', () => {
       if (!response.ok) {
         throw new Error(data.message || 'Failed to post publication');
       }
+
+      lastPublicationDate.value = new Date(data.createdAt);
 
       // Envoi d'une notification de succès
       notificationsStore.addMessage({ message: 'Publication posted', type: 'success' });
@@ -132,12 +135,13 @@ export const usePublicationStore = defineStore('publication', () => {
     const currentUserId = userStore.getUser.id;
     try {
       const lastPublication = await fetchApi({
-          url: `/publications?userId=${currentUserId}&onlyLast=true`,
+        url: `/publications?userId=${currentUserId}&onlyLast=true`,
       });
+      lastPublicationDate.value = new Date(lastPublication.data.createdAt);
+
       return lastPublication.data;
     } catch (error) {
       if (error.status === 404) {
-        console.log('No publication found');
         return null;
       }
       console.error('Failed to fetch last publication:', error);
@@ -148,25 +152,20 @@ export const usePublicationStore = defineStore('publication', () => {
 
   // function to know if the user already post since the last notification
   const hasAlreadyPost = async () => {
-    try{
-      // Get the last notification date
-      const lastNotification = await notificationsStore.getLastBeRealNotification();
-      if (!lastNotification.sentAt) {
-        throw new Error('Failed to fetch last notification date');
-      }
+    const lastNotification = await notificationsStore.getLastBeRealNotification();
+    if (!lastNotification.sentAt) {
+      console.error('Failed to fetch last notification date');
+      return false;
+    }
 
-      // Get the last user publication date
+    if (!lastPublicationDate.value) {
       const lastPublication = await getLastPublication();
       if (!lastPublication) {
         return false;
       }
-
-      // Compare the two dates
-      return new Date(lastPublication.createdAt) > new Date(lastNotification.sentAt);
-    } catch (error) {
-      console.error('Failed to check if user already post:', error);
-      return false;
     }
+
+    return lastPublicationDate.value > new Date(lastNotification.sentAt);
   }
 
   const getPublication = computed(() => publication.value);
