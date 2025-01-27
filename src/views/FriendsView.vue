@@ -41,7 +41,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <main class="max-h-screen h-full overflow-y-scroll px-4 pb-40 pt-6">
+  <main class="max-h-screen h-full overflow-y-scroll px-4 pb-40 pt-24">
     <AppSearchBar
       placeholder="Ajouter ou rechercher des amis"
       class="mb-8"

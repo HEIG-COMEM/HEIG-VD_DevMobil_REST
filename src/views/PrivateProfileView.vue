@@ -98,7 +98,7 @@ fetchUser();
 </script>
 
 <template>
-  <main class="max-h-screen h-full overflow-y-scroll px-4 pb-24 pt-6 flex flex-col">
+  <main class="max-h-screen h-full overflow-y-scroll pb-14 pt-24 px-4 flex flex-col">
     <form
       @submit.prevent="updateAccount()"
       class="flex h-full flex-col justify-center gap-4"

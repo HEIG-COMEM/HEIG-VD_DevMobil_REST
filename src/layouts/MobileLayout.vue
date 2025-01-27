@@ -20,7 +20,7 @@ watch(
 
 <template>
   <div class="relative flex flex-col h-dvh w-full max-w-screen-sm">
-    <TheHeader v-if="!hideNavbar" />
+    <TheHeader v-if="!hideNavbar" class="absolute top-0 w-full" />
     <div class="flex-grow overflow-y-auto overflow-x-hidden">
       <slot></slot>
     </div>

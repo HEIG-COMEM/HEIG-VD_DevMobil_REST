@@ -13,7 +13,7 @@ publicationStore.setPublicationId(route.params.id);
 </script>
 
 <template>
-  <main class="max-h-screen overflow-y-scroll px-4 pb-44 pt-6">
+  <main class="max-h-screen overflow-y-scroll px-4 pb-24 pt-24">
     <div
       v-if="publicationStore.getOwner"
       class="flex flex-row items-center justify-between gap-2 p-2"

@@ -27,7 +27,7 @@ onMounted(() => {
 
 <template>
   <div
-    class="flex flex-row items-center justify-between gap-5 rounded-b-3xl bg-base-100 p-5"
+    class="flex flex-row items-center justify-between gap-5 rounded-b-3xl bg-base-100 p-5 z-30"
   >
     <div class="status flex flex-col gap-2 md:flex-row">
       <TheApiStatusIndicator class="mr-2" />
