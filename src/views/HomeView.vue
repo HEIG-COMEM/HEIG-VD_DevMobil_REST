@@ -26,7 +26,7 @@ if (router.currentRoute.value.query.registered) {
 </script>
 
 <template>
-  <main class="max-h-screen overflow-y-scroll pb-14 pt-24">
+  <main class="max-h-screen overflow-y-scroll px-4 pb-14 pt-24">
     <template v-if="publicationsStore.getPublications.data.length">
       <AppPublicationCard
         v-for="publication in publicationsStore.getPublications.data"
