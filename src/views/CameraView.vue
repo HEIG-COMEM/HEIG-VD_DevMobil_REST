@@ -194,13 +194,13 @@ const sendPublication = async () => {
           @click="togglePicture()"
         >
           <img
-            class="h-full w-full transform rounded-lg object-cover border border-black"
+            class="h-full w-full transform rounded-lg object-cover border-2 border-black"
             :class="fisrtPictureSrc === 'user' || cameras.length < 2 ? 'scale-x-[-1]' : ''"
             :src="fisrtPictureSrc === 'user' ? frontCameraBase64 : backCameraBase64"
           />
         </div>
         <img
-          class="w-full rounded-[1.75rem] object-cover aspect-3/4 absolute top-0 left-0 border border-black"
+          class="w-full rounded-[1.25rem] object-cover aspect-3/4 absolute top-0 left-0 border-2 border-black"
           :class="fisrtPictureSrc !== 'user' || cameras.length < 2 ? 'scale-x-[-1]' : ''"
           :src="fisrtPictureSrc !== 'user' ? frontCameraBase64 : backCameraBase64"
           v-if="frontCameraBase64 && backCameraBase64"

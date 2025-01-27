@@ -208,12 +208,12 @@ defineExpose({
 </script>
 
 <template>
-  <div id="camera-container" class="relative aspect-[3/4] h-auto mx-auto min-h-20">
+  <div id="camera-container" class="relative aspect-3/4 h-auto mx-auto min-h-20">
     <video
       autoplay
       ref="video"
       id="video"
-      class="rounded-[1.75rem]"
+      class="rounded-[1.25rem]"
       :class="props.facingMode === 'user' ? 'transform scale-x-[-1]' : ''"
     ></video>
     <div id="slot-container">

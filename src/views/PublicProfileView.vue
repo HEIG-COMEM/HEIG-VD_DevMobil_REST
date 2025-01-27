@@ -96,16 +96,16 @@ const askFriend = async () => {
     <p class="mt-12 text-xl font-bold">BeReal récents :</p>
     <template v-if="isFriend === 1">
       <div v-if="!lastPublications" class="mt-6 flex flex-row gap-4">
-        <div class="skeleton aspect-[9/16] flex-grow"></div>
-        <div class="skeleton aspect-[9/16] flex-grow"></div>
-        <div class="skeleton aspect-[9/16] flex-grow"></div>
+        <div class="skeleton aspect-3/4 flex-grow"></div>
+        <div class="skeleton aspect-3/4 flex-grow"></div>
+        <div class="skeleton aspect-3/4 flex-grow"></div>
       </div>
       <div v-else class="show-case mt-6 flex flex-row gap-4">
         <RouterLink
           v-for="(publication, index) in lastPublications"
           :key="index"
           :to="publication ? `/publications/${publication._id}` : `#`"
-          class="aspect-[9/16] rounded-2xl"
+          class="aspect-3/4 rounded-2xl"
           :class="{ 'cursor-pointer': publication }"
         >
           <img
@@ -119,9 +119,9 @@ const askFriend = async () => {
     </template>
 
     <div v-else class="relative mt-6 flex flex-row gap-4">
-      <div class="skeleton aspect-[9/16] flex-grow"></div>
-      <div class="skeleton aspect-[9/16] flex-grow"></div>
-      <div class="skeleton aspect-[9/16] flex-grow"></div>
+      <div class="skeleton aspect-3/4 flex-grow"></div>
+      <div class="skeleton aspect-3/4 flex-grow"></div>
+      <div class="skeleton aspect-3/4 flex-grow"></div>
       <div
         class="absolute left-0 top-0 flex h-full w-full items-center justify-center rounded-2xl bg-white/10 backdrop-blur-md"
       >

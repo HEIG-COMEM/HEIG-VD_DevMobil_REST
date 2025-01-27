@@ -41,7 +41,7 @@ const smallCamera = computed(() => {
 </script>
 
 <template>
-  <div class="px-8 pb-8">
+  <div class="px-0 pb-8">
     <div
       class="flex flex-row content-center items-center justify-between gap-2 p-2"
     >
@@ -61,17 +61,17 @@ const smallCamera = computed(() => {
     </div>
     <div class="relative">
       <div
-        class="absolute ml-4 mt-4 h-36 cursor-pointer rounded-lg bg-white shadow-lg"
+        class="absolute ml-4 mt-4 h-[30%] aspect-3/4 cursor-pointer rounded-lg bg-white shadow-lg"
         @click="toggleCamera()"
       >
         <img
-          class="h-full w-full rounded-lg border border-black object-cover"
+          class="h-full w-full rounded-lg border-2 border-black object-cover"
           :src="smallCamera"
           alt="publication"
         />
       </div>
       <img
-        class="w-full rounded-lg object-cover"
+        class="w-full rounded-[1.25rem] object-cover"
         :src="bigCamera"
         alt="publication"
       />
