@@ -9,10 +9,11 @@ const notificationsStore = useNotificationsStore();
 </script>
 
 <template>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <MobileLayout>
     <TheGlobalModal />
-    <div class="toast sm:max-w-screen-sm w-full whitespace-normal toast-center toast-top z-50">
+    <div
+      class="toast toast-center toast-top z-50 w-full whitespace-normal sm:max-w-screen-sm"
+    >
       <BaseToast
         v-for="(notification, index) in notificationsStore.getMessages"
         :key="index"
