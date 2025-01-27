@@ -1,5 +1,5 @@
 import { computed, ref } from 'vue';
-import { defineStore } from 'pinia';
+import { defineStore, getActivePinia } from 'pinia';
 import router from '@/router';
 import { useFetchApi } from '@/composables/useFetchApi';
 
@@ -59,14 +59,17 @@ export const useUserStore = defineStore('user', () => {
   const isAuthenticated = computed(() => !!token.value);
 
   const logout = () => {
-    user.value = null;
-    token.value = null;
-    localStorage.removeItem('bereal_token');
-    // only redirect to /login if the user is on any page other than /login or /register
-    if (router.currentRoute.value.path !== '/login' && router.currentRoute.value.path !== '/register') router.push('/login');
+    getActivePinia()._s.forEach(store => store.$reset());
   };
 
   const refreshUser = async () => await fetchUserData();
+
+  const $reset = () => {
+    user.value = null;
+    token.value = null;
+    localStorage.removeItem('bereal_token');
+    if (router.currentRoute.value.path !== '/login' && router.currentRoute.value.path !== '/register') router.push('/login');
+  }
 
   return {
     setToken,
@@ -76,5 +79,6 @@ export const useUserStore = defineStore('user', () => {
     isAuthenticated,
     isAdmin,
     logout,
+    $reset,
   };
 });

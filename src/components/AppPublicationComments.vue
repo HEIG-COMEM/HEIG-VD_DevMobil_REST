@@ -1,47 +1,21 @@
 <script setup>
 import { computed, ref, useTemplateRef } from 'vue';
-import { useUserStore } from '@/stores/userStore';
-import { useFetchApi } from '@/composables/useFetchApi';
+import { usePublicationStore } from '@/stores/publicationStore';
 import AppPublicationCommentsList from './AppPublicationCommentsList.vue';
 
-const props = defineProps({
-  publicationId: {
-    type: String,
-    required: true,
-  },
-});
+const publicationStore = usePublicationStore();
 
-const userStore = useUserStore();
-
-const comments = ref([]);
 const commentInput = useTemplateRef('commentInput');
 const newComment = ref('');
 const loading = ref(false);
 const canSend = computed(() => newComment.value.trim() && !loading.value);
 const replyTo = ref(null);
 
-const { fetchApi } = useFetchApi(import.meta.env.VITE_API_URL, {
-  Authorization: `Bearer ${userStore.getToken}`,
-});
-
-const fetchComments = async () => {
-  try {
-    const response = await fetchApi({
-      url: `/publications/${props.publicationId}/comments`,
-    });
-    comments.value = response.data;
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-fetchComments();
-
 const nestedComments = computed(() => {
   const commentMap = new Map();
   const roots = [];
 
-  comments.value.forEach(comment => {
+  publicationStore.getComments.forEach(comment => {
     commentMap.set(comment._id, { ...comment, children: [] });
   });
 
@@ -72,47 +46,24 @@ const handleReply = comment => {
 };
 
 const submitComment = async () => {
-  try {
-    loading.value = true;
-    const payload = {
-      content: newComment.value.trim(),
-      parentComment: replyTo.value ? replyTo.value._id : null,
-    };
-
-    await fetchApi({
-      url: `/publications/${props.publicationId}/comments`,
-      method: 'POST',
-      data: payload,
-    });
-
-    newComment.value = '';
-    replyTo.value = null;
-    fetchComments();
-  } catch (error) {
-    console.error(error);
-  } finally {
-    loading.value = false;
-  }
+  loading.value = true;
+  await publicationStore.postNewComment(
+    newComment.value.trim(),
+    replyTo.value ? replyTo.value._id : null,
+  );
+  newComment.value = '';
+  replyTo.value = null;
+  loading.value = false;
 };
 
 const deleteComment = async commentId => {
   loading.value = true;
-  try {
-    await fetchApi({
-      url: `/publications/${props.publicationId}/comments/${commentId}`,
-      method: 'DELETE',
-    });
-
-    fetchComments();
-  } catch (error) {
-    console.error(error);
-  } finally {
-    loading.value = false;
-  }
+  await publicationStore.deleteComment(commentId);
+  loading.value = false;
 };
 </script>
 <template>
-  <div v-if="comments.length" class="pb-12">
+  <div v-if="publicationStore.getComments.length" class="pb-12">
     <AppPublicationCommentsList
       :comments="nestedComments"
       @reply="handleReply($event)"
@@ -147,9 +98,5 @@ const deleteComment = async commentId => {
 <style scoped>
 :deep(.chat-bubble::before) {
   content: none;
-}
-
-.chat-reply {
-  padding-left: 50px;
 }
 </style>

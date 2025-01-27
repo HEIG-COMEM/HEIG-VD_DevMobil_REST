@@ -50,9 +50,20 @@ export const usePublicationsStore = defineStore('publications', () => {
     }
   }
 
+  const $reset = () => {
+    publications.value = {
+      data: [],
+      metas: null,
+    };
+    page.value = 1;
+    hasMore.value = false;
+    loading.value = false;
+  }
+
   return {
     getPublications,
     isLoading,
     loadMorePublications,
+    $reset,
   };
 });

@@ -37,7 +37,7 @@ const smallCamera = computed(() => {
   <div class="flex flex-col items-center gap-4 p-1">
     <div class="relative flex w-1/2 flex-col items-center gap-2">
       <div
-        class="absolute left-4 top-4 h-32 cursor-pointer rounded-lg bg-white shadow-lg"
+        class="absolute left-1 top-1 h-[30%] aspect-3/4 cursor-pointer rounded-xl bg-white shadow-lg"
         @click="toggleCamera()"
       >
         <img
@@ -52,7 +52,7 @@ const smallCamera = computed(() => {
       <FontAwesomeIcon class="h-4 w-4 drop-shadow-lg" :icon="faLocationArrow" />
       {{ locality }}
     </div>
-    <AppPublicationComments :publicationId="publication._id" />
+    <AppPublicationComments />
   </div>
 </template>
 

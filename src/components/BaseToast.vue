@@ -24,7 +24,7 @@ const classe = computed(() => {
 });
 
 setTimeout(() => {
-  toast.value.remove();
+  toast.value?.remove();
 }, 5000);
 </script>
 

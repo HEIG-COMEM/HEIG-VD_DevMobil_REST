@@ -9,9 +9,14 @@ export const formatDate = (date, { day = 'numeric', month = 'short', year = 'num
 export const formatDateLong = (date) => {
   const dateObj = new Date(date);
 
-  return dateObj.toDateString() === new Date().toDateString()
-    ? `Aujourd'hui à ${dateObj.toLocaleTimeString()}`
-    : `Il y a ${Math.floor(
-      (new Date() - dateObj) / (1000 * 60 * 60 * 24),
-    )} jours à ${dateObj.toLocaleTimeString()}`;
+  if(dateObj.toDateString() === new Date().toDateString()) {
+    return `Aujourd'hui à ${dateObj.toLocaleTimeString()}`;
+  } else {
+    const days = Math.floor((new Date() - dateObj) / (1000 * 60 * 60 * 24));
+    if (days <= 1) {
+      return `Hier à ${dateObj.toLocaleTimeString()}`;
+    } else {
+      return `Il y a ${days} jours à ${dateObj.toLocaleTimeString()}`;
+    }
+  }
 }
