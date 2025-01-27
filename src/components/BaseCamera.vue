@@ -1,5 +1,12 @@
 <script setup>
-import { onMounted, onUnmounted, ref, defineProps, defineExpose, computed } from 'vue';
+import {
+  onMounted,
+  onUnmounted,
+  ref,
+  defineProps,
+  defineExpose,
+  computed,
+} from 'vue';
 
 const props = defineProps({
   resolution: {
@@ -65,8 +72,6 @@ const constraints = props.constraints || {
   },
   audio: false,
 };
-
-const ratio = computed(() => props.resolution.width / props.resolution.height);
 
 const devices = async (kinds = ['videoinput']) => {
   const devices = await navigator.mediaDevices.enumerateDevices();
@@ -208,13 +213,16 @@ defineExpose({
 </script>
 
 <template>
-  <div id="camera-container" class="relative aspect-3/4 h-auto mx-auto min-h-20">
+  <div
+    id="camera-container"
+    class="relative mx-auto aspect-3/4 h-auto min-h-20"
+  >
     <video
       autoplay
       ref="video"
       id="video"
       class="rounded-[1.25rem]"
-      :class="props.facingMode === 'user' ? 'transform scale-x-[-1]' : ''"
+      :class="props.facingMode === 'user' ? 'scale-x-[-1] transform' : ''"
     ></video>
     <div id="slot-container">
       <slot></slot>
