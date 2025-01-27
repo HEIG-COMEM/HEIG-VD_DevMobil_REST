@@ -6,5 +6,5 @@ export const reverseGeocoding = async (latitude, longitude) => {
     return 'Quelque part sur Terre';
   }
 
-  return data.display_name;
+  return `${data.address.city || data.address.village} (${data.address.state}) ${data.address.country}`;
 }
