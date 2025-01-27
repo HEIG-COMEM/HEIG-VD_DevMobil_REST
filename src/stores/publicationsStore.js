@@ -38,7 +38,7 @@ export const usePublicationsStore = defineStore('publications', () => {
   };
 
   const getPublications = computed(() => {
-    if (publications.value.data.length === 0) loadCurrentPublications()
+    if (publications.value.data.length === 0 && !publications.value.metas) loadCurrentPublications()
     return publications.value;
   });
   const isLoading = computed(() => loading.value);

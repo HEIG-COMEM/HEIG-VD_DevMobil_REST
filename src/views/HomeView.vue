@@ -27,11 +27,18 @@ if (router.currentRoute.value.query.registered) {
 
 <template>
   <main class="max-h-screen overflow-y-scroll pb-14 pt-24">
-    <AppPublicationCard
-      v-for="publication in publicationsStore.getPublications.data"
-      :key="publication._id"
-      :publication="publication"
-    />
+    <template v-if="publicationsStore.getPublications.data.length">
+      <AppPublicationCard
+        v-for="publication in publicationsStore.getPublications.data"
+        :key="publication._id"
+        :publication="publication"
+      />
+    </template>
+    <template v-else>
+      <div class="flex flex-row justify-center">
+        <span class="text-gray-500">Aucune publication</span>
+      </div>
+    </template>
     <div
       v-show="publicationsStore.isLoading"
       class="flex flex-row justify-center"
