@@ -63,7 +63,7 @@ const fetchProfileAndStats = async () => {
     });
   }
 
-  if (profile.value.isFriend) getLastPublications();
+  if (isFriend === 1) getLastPublications();
 };
 fetchProfileAndStats();
 
