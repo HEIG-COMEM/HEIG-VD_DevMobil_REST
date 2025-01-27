@@ -168,6 +168,10 @@ export const usePublicationStore = defineStore('publication', () => {
     return lastPublicationDate.value > new Date(lastNotification.sentAt);
   }
 
+  const refreshComments = async () => {
+    fetchComments();
+  }
+
   const getPublication = computed(() => publication.value);
   const getOwner = computed(() => owner.value);
   const getComments = computed(() => comments.value);
@@ -189,6 +193,7 @@ export const usePublicationStore = defineStore('publication', () => {
     setPublicationId,
     postNewComment,
     deleteComment,
+    refreshComments,
     $reset,
   };
 });

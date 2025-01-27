@@ -2,15 +2,22 @@ import { defineStore } from 'pinia';
 import { computed, ref, watch } from 'vue';
 import { useUserStore } from '@/stores/userStore';
 import { useFetchApi } from '@/composables/useFetchApi';
+import { usePublicationStore } from '@/stores/publicationStore';
+import router from '@/router';
 
 const handleSocketMessage = (data) => {
+  const publicationStore = usePublicationStore();
   const message = JSON.parse(data);
 
   let toast = null;
 
   switch (message.type) {
     case 'commentCreated':
-      toast = "Un commentaire a été ajouté à une publication";
+      if (router.currentRoute.value.name === "publication" && router.currentRoute.value.params.id === message.data.publicationId) {
+        publicationStore.refreshComments();
+      } else {
+        toast = "Un commentaire a été ajouté à une publication";
+      }
       break;
     case 'friendRequestUpdate':
       toast = `Une demande d'ami a été ${message.data.status === 'accepted' ? 'acceptée' : 'refusée'}`;
@@ -60,6 +67,7 @@ export const useNotificationsStore = defineStore('Notifications', () => {
       if (SERVER_MESSAGE_PATTERN.test(event.data)) return;
 
       const message = handleSocketMessage(event.data);
+      if (!message) return;
       messages.value.push({ message, type: 'info' });
     });
 
