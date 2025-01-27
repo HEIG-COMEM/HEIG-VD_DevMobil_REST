@@ -29,6 +29,7 @@ export const useUserStore = defineStore('user', () => {
       };
     } catch (error) {
       console.error('Failed to fetch user data:', error);
+      if (error.status === 401) logout("Votre session a expiré, veuillez vous reconnecter");
     }
   };
 
@@ -58,8 +59,8 @@ export const useUserStore = defineStore('user', () => {
   const isAdmin = computed(() => user.value?.role === 'admin');
   const isAuthenticated = computed(() => !!token.value);
 
-  const logout = () => {
-    getActivePinia()._s.forEach(store => store.$reset());
+  const logout = (reason) => {
+    getActivePinia()._s.forEach(store => store.$reset(reason ?? ''));
   };
 
   const refreshUser = async () => await fetchUserData();
