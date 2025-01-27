@@ -12,6 +12,10 @@ The goal of this project is to replicate some of BeReal's core features to gain 
 
 ## Application Features
 
+### 0. Preamble
+
+This application is a mobile-first PWA, designed to be used as a native app on mobile devices. Nevertheless, it can also be used on a desktop, though you will lose the main user experience of taking pictures with your front and back cameras. 
+
 ### 1. Login
 
 ![Login Screen](docs/Login.png)
@@ -55,6 +59,9 @@ The publication also captures the user's location.
 The news feed displays the posts of a user's friends, updated dynamically through infinite scrolling. This feature ensures seamless navigation by continuously loading new posts as the user scrolls down, eliminating the need for manual page transitions.
 Posts are visible only if the user has also shared a photo on the same day.
 
+If the user hasn't posted this day, he wont be able to see his friend's BeReal.
+![Home Feed blury](docs/HomeBlury.png)
+
 ### 6. Comments
 
 ![Comments](docs/Comments.png)
@@ -72,6 +79,7 @@ Posts are visible only if the user has also shared a photo on the same day.
 
 ### 8. User Profile
 
+![User profile](docs/UserProfile.png)
 Each user has a public profile containing the following information:
 
 - **Profile Picture (PP)**: An image representing the user.
@@ -80,6 +88,7 @@ Each user has a public profile containing the following information:
 
 ### 9. Private Profile
 
+![Private profile](docs/PrivateProfile.png)
 To allow the user to modify its profile, a private profile is available. It contains the following information:
 
 - **Profile Picture (PP)**: An image representing the user.
