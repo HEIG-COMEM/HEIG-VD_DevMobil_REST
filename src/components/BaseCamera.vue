@@ -224,9 +224,6 @@ defineExpose({
 </template>
 
 <style scoped>
-#camera-container {
-}
-
 #video {
   width: 100%;
   height: 100%;

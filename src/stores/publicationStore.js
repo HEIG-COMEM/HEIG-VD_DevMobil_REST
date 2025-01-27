@@ -33,6 +33,55 @@ export const usePublicationStore = defineStore('publication', () => {
     }
   };
 
+  const postNewPublication = async ({
+    frontCameraBlob,
+    backCameraBlob,
+    lat,
+    lng,
+  } = {}) => {
+    // Validation des paramètres requis
+    if (!frontCameraBlob || !backCameraBlob) {
+      throw new Error('Some images are missing');
+    }
+    if (!lat || !lng) {
+      throw new Error('Some coordinates are missing');
+    }
+
+    // Construction du FormData
+    const formData = new FormData();
+    formData.append('lat', lat);
+    formData.append('lng', lng);
+    formData.append('frontCamera', frontCameraBlob, 'front.png');
+    formData.append('backCamera', backCameraBlob, 'back.png');
+
+    try {
+      // Appel direct avec fetch
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/publications`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${userStore.getToken}`,
+        },
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to post publication');
+      }
+
+      // Envoi d'une notification de succès
+      notificationsStore.addMessage({ message: 'Publication posted', type: 'success' });
+
+      return data; // Retourne les données si tout va bien
+    } catch (error) {
+      // Envoi d'une notification d'erreur
+      notificationsStore.addMessage({ message: error.message || 'Failed to post publication', type: 'error' });
+      console.error('Failed to post publication:', error);
+      throw error; // Propagation de l'erreur pour que l'appelant puisse la gérer
+    }
+  };
+
   const fetchComments = async () => {
     try {
       const { data } = await fetchApi({
@@ -92,6 +141,7 @@ export const usePublicationStore = defineStore('publication', () => {
 
   return {
     getPublication,
+    postNewPublication,
     getOwner,
     getComments,
     setPublicationId,

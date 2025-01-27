@@ -5,8 +5,12 @@ import { faChevronDown, faPaperPlane, faRotate, faXmark } from '@fortawesome/fre
 import BaseCamera from '@/components/BaseCamera.vue';
 import { useUserStore } from '@/stores/userStore';
 import { useFetchApi } from '@/composables/useFetchApi';
+import { usePublicationStore } from '@/stores/publicationStore';
+import { useRouter } from 'vue-router';
 
 const userStore = useUserStore();
+const publicationStore = usePublicationStore();
+const router = useRouter();
 
 const { fetchApi } = useFetchApi(import.meta.env.VITE_API_URL, {
   Authorization: `Bearer ${userStore.getToken}`,
@@ -15,6 +19,8 @@ const { fetchApi } = useFetchApi(import.meta.env.VITE_API_URL, {
 const facingMode = ref('user');
 
 const camera = ref(null);
+const frontCameraBlob = ref(null);
+const backCameraBlob = ref(null);
 const frontCameraBase64 = ref(null);
 const backCameraBase64 = ref(null);
 
@@ -40,7 +46,6 @@ const lastBeRealTimer = ref(0);
 onMounted(async () => {
   const devices = await camera.value?.devices();
   cameras.value = devices.filter(device => device.kind === 'videoinput');
-  console.log(cameras.value.length);
   const lastNotificationTime = await getLastNotificationTime();
   lastBeRealTimer.value = Math.floor((Date.now() - lastNotificationTime) / 1000);
 });
@@ -48,7 +53,6 @@ onMounted(async () => {
 // const lastBeRealTimer = ref(0);
 setInterval(() => {
   lastBeRealTimer.value++;
-  console.log(lastBeRealTimer.value);
 }, 1000);
 
 //get timer value hh:mm:ss format (2 numbers)
@@ -77,8 +81,10 @@ const snapshot = async () => {
   });
 
   if (facingMode.value === 'user') {
+    frontCameraBlob.value = blob;
     frontCameraBase64.value = base64;
   } else {
+    backCameraBlob.value = blob;
     backCameraBase64.value = base64;
   }
 
@@ -105,21 +111,70 @@ const togglePicture = () => {
 };
 
 const dump = () => {
+  frontCameraBlob.value = null;
   frontCameraBase64.value = null;
+  backCameraBlob.value = null;
   backCameraBase64.value = null;
   fisrtPictureSrc.value = null;
   camera.value.start();
 };
 
-const sendPublication = () => {
-  // Send the base64 images to the server
-  // ...
+const isSending = ref(false);
+const getPosition = () => {
+  return new Promise((resolve, reject) => {
+    navigator.geolocation.getCurrentPosition(resolve, reject);
+  });
+};
+
+const sendPublication = async () => {
+  // Empêche plusieurs appels simultanés
+  if (isSending.value) {
+    console.warn('A publication is already being sent');
+    return;
+  }
+  isSending.value = true; // Verrouille l'état d'envoi
+
+  try {
+    // Étape 1 : Récupérer la position
+    const position = await getPosition(); // Attend que la position soit résolue
+    const lat = position.coords.latitude;
+    const lng = position.coords.longitude;
+
+    // Étape 2 : Vérification des coordonnées
+    if (!lat || !lng) {
+      throw new Error('Coordinates not found');
+    }
+
+    // Étape 3 : Inverser les images si nécessaire
+    if (fisrtPictureSrc.value === 'user') {
+      const tmp = frontCameraBlob.value;
+      frontCameraBlob.value = backCameraBlob.value;
+      backCameraBlob.value = tmp;
+    }
+
+    // Étape 4 : Envoyer la publication
+    await publicationStore.postNewPublication({
+      frontCameraBlob: frontCameraBlob.value,
+      backCameraBlob: backCameraBlob.value,
+      lat,
+      lng,
+    });
+
+    // Étape 5 : Réinitialiser la caméra et rediriger
+    dump();
+    router.push('/');
+  } catch (error) {
+    console.error('Failed to send publication:', error.message);
+  } finally {
+    // Réinitialise toujours isSending, même en cas d'erreur
+    isSending.value = false;
+  }
 };
 
 </script>
 
 <template>
-  <div class="flex flex-col justify-between h-full">
+  <div class="flex flex-col justify-between h-full relative">
     <header class="flex flex-col justify-center items-center relative my-2">
       <button class="absolute left-1 top-1 p-0.5 btn btn-square bg-transparent border-0 text-lg">
         <RouterLink to="/"><FontAwesomeIcon class="text-white justify-self-start" :icon="faChevronDown" /></RouterLink>
@@ -185,6 +240,12 @@ const sendPublication = () => {
           <FontAwesomeIcon class="text-white text-4xl ml-1" :icon="faPaperPlane" />
         </button>
     </footer>
+    <div
+      class="absolute top-0 left-0 w-dvw h-dvh z-20 bg-black bg-opacity-50 flex justify-center items-center"
+      v-if="isSending"
+    >
+      <span class="loading loading-spinner loading-lg"></span>
+    </div>
   </div>
 </template>
 
