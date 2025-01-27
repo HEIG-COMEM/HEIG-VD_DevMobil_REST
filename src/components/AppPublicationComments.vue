@@ -63,35 +63,35 @@ const deleteComment = async commentId => {
 };
 </script>
 <template>
-  <div v-if="publicationStore.getComments.length" class="pb-12">
+  <div v-if="publicationStore.getComments.length" class="w-full pb-12">
     <AppPublicationCommentsList
       :comments="nestedComments"
       @reply="handleReply($event)"
       @delete="deleteComment($event)"
     />
-    <div
-      class="absolute bottom-16 left-0 flex w-full items-center justify-between gap-2 bg-black px-2 pb-5 pt-2"
+  </div>
+  <div
+    class="absolute bottom-16 left-0 flex w-full items-center justify-between gap-2 bg-black px-2 pb-5 pt-2"
+  >
+    <label class="input input-bordered flex flex-grow items-center gap-2">
+      {{ replyTo ? `@${replyTo.user.name}` : null }}
+      <input
+        class="w-full grow border-none bg-transparent text-white"
+        type="text"
+        placeholder="Écrivez un commentaire"
+        v-model="newComment"
+        ref="commentInput"
+        @keydown.delete="handleDelete()"
+        @keydown.enter="submitComment()"
+      />
+    </label>
+    <button
+      class="btn btn-primary"
+      :disabled="!canSend"
+      @click="submitComment()"
     >
-      <label class="input input-bordered flex flex-grow items-center gap-2">
-        {{ replyTo ? `@${replyTo.user.name}` : null }}
-        <input
-          class="w-full grow border-none bg-transparent text-white"
-          type="text"
-          placeholder="Écrivez un commentaire"
-          v-model="newComment"
-          ref="commentInput"
-          @keydown.delete="handleDelete()"
-          @keydown.enter="submitComment()"
-        />
-      </label>
-      <button
-        class="btn btn-primary"
-        :disabled="!canSend"
-        @click="submitComment()"
-      >
-        Envoyer
-      </button>
-    </div>
+      Envoyer
+    </button>
   </div>
 </template>
 
