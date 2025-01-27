@@ -78,6 +78,20 @@ Each user has a public profile containing the following information:
 - **Pseudonym**: A nickname chosen by each user when creating their account.
 - **Last Three BeReals**: The user's last three posts are visible on their profile, allowing others to see their recent activity. _Only available if the viewing user is friends with the profile owner. Otherwise, a "add friend" button is displayed._
 
+### 9. Private Profile
+
+To allow the user to modify its profile, a private profile is available. It contains the following information:
+
+- **Profile Picture (PP)**: An image representing the user.
+- **Pseudonym**: A nickname chosen by each user when creating their account.
+- **Email**: The email address of the user.
+- **Password**: The password of the user.
+- **Last Three BeReals**: The user's last three posts are visible on their profile
+
+The user can modify its profile picture, pseudonym, email and password.
+
+_This view is also used to logout the user._
+
 ## Authors
 
 This project was carried out by:
