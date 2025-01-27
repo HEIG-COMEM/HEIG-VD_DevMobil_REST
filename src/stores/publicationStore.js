@@ -33,6 +33,55 @@ export const usePublicationStore = defineStore('publication', () => {
     }
   };
 
+  const postNewPublication = async ({
+    frontCameraBlob,
+    backCameraBlob,
+    lat,
+    lng,
+  } = {}) => {
+    // Validation des paramètres requis
+    if (!frontCameraBlob || !backCameraBlob) {
+      throw new Error('Some images are missing');
+    }
+    if (!lat || !lng) {
+      throw new Error('Some coordinates are missing');
+    }
+
+    // Construction du FormData
+    const formData = new FormData();
+    formData.append('lat', lat);
+    formData.append('lng', lng);
+    formData.append('frontCamera', frontCameraBlob, 'front.png');
+    formData.append('backCamera', backCameraBlob, 'back.png');
+
+    try {
+      // Appel direct avec fetch
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/publications`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${userStore.getToken}`,
+        },
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to post publication');
+      }
+
+      // Envoi d'une notification de succès
+      notificationsStore.addMessage({ message: 'Publication posted', type: 'success' });
+
+      return data; // Retourne les données si tout va bien
+    } catch (error) {
+      // Envoi d'une notification d'erreur
+      notificationsStore.addMessage({ message: error.message || 'Failed to post publication', type: 'error' });
+      console.error('Failed to post publication:', error);
+      throw error; // Propagation de l'erreur pour que l'appelant puisse la gérer
+    }
+  };
+
   const fetchComments = async () => {
     try {
       const { data } = await fetchApi({
@@ -79,6 +128,47 @@ export const usePublicationStore = defineStore('publication', () => {
     fetchComments();
   }
 
+  const getLastPublication = async () => {
+    const currentUserId = userStore.getUser.id;
+    try {
+      const lastPublication = await fetchApi({
+          url: `/publications?userId=${currentUserId}&onlyLast=true`,
+      });
+      return lastPublication.data;
+    } catch (error) {
+      if (error.status === 404) {
+        console.log('No publication found');
+        return null;
+      }
+      console.error('Failed to fetch last publication:', error);
+      return null;
+    }
+  }
+
+
+  // function to know if the user already post since the last notification
+  const hasAlreadyPost = async () => {
+    try{
+      // Get the last notification date
+      const lastNotification = await notificationsStore.getLastBeRealNotification();
+      if (!lastNotification.sentAt) {
+        throw new Error('Failed to fetch last notification date');
+      }
+
+      // Get the last user publication date
+      const lastPublication = await getLastPublication();
+      if (!lastPublication) {
+        return false;
+      }
+
+      // Compare the two dates
+      return new Date(lastPublication.createdAt) > new Date(lastNotification.sentAt);
+    } catch (error) {
+      console.error('Failed to check if user already post:', error);
+      return false;
+    }
+  }
+
   const getPublication = computed(() => publication.value);
   const getOwner = computed(() => owner.value);
   const getComments = computed(() => comments.value);
@@ -92,6 +182,9 @@ export const usePublicationStore = defineStore('publication', () => {
 
   return {
     getPublication,
+    getLastPublication,
+    hasAlreadyPost,
+    postNewPublication,
     getOwner,
     getComments,
     setPublicationId,

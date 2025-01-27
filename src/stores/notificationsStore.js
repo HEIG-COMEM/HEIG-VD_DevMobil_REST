@@ -91,6 +91,18 @@ export const useNotificationsStore = defineStore('Notifications', () => {
     }
   }
 
+  const getLastBeRealNotification = async () => {
+    try {
+      const { data } = await fetchApi({
+        url: `/notifications?onlyLast=true`,
+      });
+      return data[0];
+    } catch (error) {
+      console.error('Failed to fetch last notification:', error);
+      return null;
+    }
+  }
+
   const getMessages = computed(() => messages.value);
   const isSocketConnected = computed(() => isConnected.value);
 
@@ -104,6 +116,7 @@ export const useNotificationsStore = defineStore('Notifications', () => {
     getMessages,
     isSocketConnected,
     sendBeRealNotfication,
+    getLastBeRealNotification,
     addMessage,
     $reset,
   };

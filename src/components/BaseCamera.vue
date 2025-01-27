@@ -68,7 +68,7 @@ const constraints = props.constraints || {
 
 const ratio = computed(() => props.resolution.width / props.resolution.height);
 
-const devices = async (kinds = ['audioinput', 'videoinput']) => {
+const devices = async (kinds = ['videoinput']) => {
   const devices = await navigator.mediaDevices.enumerateDevices();
   return devices.filter(device => kinds.includes(device.kind));
 };
@@ -98,33 +98,6 @@ const start = async () => {
     emit('error', err);
   }
 };
-
-// const snapshot = (
-//   resolution = props.resolution,
-//   type = 'image/png',
-//   quality,
-// ) => {
-//   if (!video.value) throw new Error('Video ref is null');
-//   if (!canvas.value) throw new Error('Canvas ref is null');
-
-//   const { width, height } = resolution;
-
-//   canvas.value.width = width;
-//   canvas.value.height = height;
-
-//   canvas.value.getContext('2d')?.drawImage(video.value, 0, 0, width, height);
-
-//   return new Promise(resolve => {
-//     canvas.value?.toBlob(
-//       blob => {
-//         emit('snapshot', blob);
-//         resolve(blob);
-//       },
-//       type,
-//       quality,
-//     );
-//   });
-// };
 
 const snapshot = (
   resolution = props.resolution,
@@ -240,11 +213,9 @@ defineExpose({
       autoplay
       ref="video"
       id="video"
-      :class="{
-        'rounded-[2rem] scale-x-[-1] transform': props.facingMode === 'user',
-      }"
+      class="rounded-[1.75rem]"
+      :class="props.facingMode === 'user' ? 'transform scale-x-[-1]' : ''"
     ></video>
-
     <div id="slot-container">
       <slot></slot>
     </div>
@@ -253,9 +224,6 @@ defineExpose({
 </template>
 
 <style scoped>
-#camera-container {
-}
-
 #video {
   width: 100%;
   height: 100%;
