@@ -63,7 +63,7 @@ const fetchProfileAndStats = async () => {
     });
   }
 
-  if (isFriend === 1) getLastPublications();
+  if (profile.value.isFriend === 1) getLastPublications();
 };
 fetchProfileAndStats();
 
@@ -91,7 +91,7 @@ const askFriend = async () => {
 </script>
 
 <template>
-  <main class="max-h-screen h-full overflow-y-scroll px-4 pb-24 pt-24">
+  <main class="h-full max-h-screen overflow-y-scroll px-4 pb-24 pt-24">
     <AppPublicProfile :profile :stats />
     <p class="mt-12 text-xl font-bold">BeReal récents :</p>
     <template v-if="isFriend === 1">
