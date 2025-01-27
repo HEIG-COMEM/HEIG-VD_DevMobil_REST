@@ -98,10 +98,10 @@ fetchUser();
 </script>
 
 <template>
-  <main class="max-h-screen overflow-y-scroll px-4 pb-44 pt-6">
+  <main class="max-h-screen h-full overflow-y-scroll px-4 pb-24 pt-6 flex flex-col">
     <form
       @submit.prevent="updateAccount()"
-      class="mt-12 flex h-full flex-col justify-center gap-12"
+      class="flex h-full flex-col justify-center gap-4"
     >
       <div class="avatar justify-center">
         <div

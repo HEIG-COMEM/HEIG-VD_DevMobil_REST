@@ -19,10 +19,12 @@ watch(
 </script>
 
 <template>
-  <div class="relative h-dvh w-full max-w-screen-sm overflow-hidden">
+  <div class="relative flex flex-col h-dvh w-full max-w-screen-sm">
     <TheHeader v-if="!hideNavbar" />
-    <slot></slot>
-    <TheNavbar v-if="!hideNavbar" class="absolute bottom-0 left-0 w-full" />
+    <div class="flex-grow overflow-y-auto overflow-x-hidden">
+      <slot></slot>
+    </div>
+    <TheNavbar v-if="!hideNavbar" class="absolute bottom-0 w-full" />
   </div>
 </template>
 

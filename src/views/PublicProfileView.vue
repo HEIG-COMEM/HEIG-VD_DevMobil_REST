@@ -91,39 +91,39 @@ const askFriend = async () => {
 </script>
 
 <template>
-  <main class="max-h-screen overflow-y-scroll px-4 pb-44 pt-6">
+  <main class="max-h-screen h-full overflow-y-scroll px-4 pb-24 pt-6">
     <AppPublicProfile :profile :stats />
     <p class="mt-12 text-xl font-bold">BeReal récents :</p>
     <template v-if="isFriend === 1">
-      <div v-if="!lastPublications" class="mt-6 flex flex-row gap-4">
+      <div v-if="!lastPublications" class="mt-4 flex flex-row gap-2">
         <div class="skeleton aspect-3/4 flex-grow"></div>
         <div class="skeleton aspect-3/4 flex-grow"></div>
         <div class="skeleton aspect-3/4 flex-grow"></div>
       </div>
-      <div v-else class="show-case mt-6 flex flex-row gap-4">
+      <div v-else class="show-case mt-4 flex flex-row gap-2">
         <RouterLink
           v-for="(publication, index) in lastPublications"
           :key="index"
           :to="publication ? `/publications/${publication._id}` : `#`"
-          class="aspect-3/4 rounded-2xl"
+          class="aspect-3/4 rounded-lg"
           :class="{ 'cursor-pointer': publication }"
         >
           <img
             v-if="publication"
             :src="publication.backCamera.url"
-            class="h-full w-full rounded-2xl object-cover"
+            class="h-full w-full rounded-lg object-cover"
             alt=""
           />
         </RouterLink>
       </div>
     </template>
 
-    <div v-else class="relative mt-6 flex flex-row gap-4">
+    <div v-else class="relative mt-4 flex flex-row gap-2">
       <div class="skeleton aspect-3/4 flex-grow"></div>
       <div class="skeleton aspect-3/4 flex-grow"></div>
       <div class="skeleton aspect-3/4 flex-grow"></div>
       <div
-        class="absolute left-0 top-0 flex h-full w-full items-center justify-center rounded-2xl bg-white/10 backdrop-blur-md"
+        class="absolute left-0 top-0 flex h-full w-full items-center justify-center rounded-lg bg-white/10 backdrop-blur-md"
       >
         <button
           @click="askFriend()"

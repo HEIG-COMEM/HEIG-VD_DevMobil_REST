@@ -28,7 +28,7 @@ defineProps({
           }}
         </p>
       </div>
-      <div class="stats stats-vertical shadow md:stats-horizontal">
+      <div class="stats w-3/5 sm:w-full shadow sm:stats-horizontal stats-vertical">
         <div class="stat">
           <div class="stat-title">Publications</div>
           <div class="stat-value">{{ stats.publications }}</div>
@@ -50,9 +50,3 @@ defineProps({
     </div>
   </template>
 </template>
-
-<style scoped>
-.stat-title {
-  width: 13ch;
-}
-</style>

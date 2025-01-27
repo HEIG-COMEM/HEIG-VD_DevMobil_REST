@@ -9,6 +9,7 @@ const notificationsStore = useNotificationsStore();
 </script>
 
 <template>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <MobileLayout>
     <TheGlobalModal />
     <div class="toast toast-end toast-top z-50">
