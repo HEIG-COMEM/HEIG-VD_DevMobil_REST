@@ -24,6 +24,8 @@ const profilePictureUrl = computed(() => {
 
 const loading = ref(false);
 
+const lastPublications = ref(null);
+
 const { fetchApi } = useFetchApi(import.meta.env.VITE_API_URL, {
   Authorization: `Bearer ${userStore.getToken}`,
 });
@@ -87,8 +89,22 @@ const logout = () => {
   });
 };
 
+const fetchLastPublications = async () => {
+  const { data } = await fetchApi({
+    url: `/publications?page=1&limit=3&userId=${userStore.getUser.id}`,
+    method: 'GET',
+  });
+
+  if (data.length < 3) {
+    lastPublications.value = [...data, ...Array(3 - data.length).fill(null)];
+  } else {
+    lastPublications.value = data;
+  }
+};
+
 const fetchUser = async () => {
   const { data } = await fetchApi({ url: 'auth/user' });
+  fetchLastPublications();
 
   user.value = data;
   name.value = data.name;
@@ -98,10 +114,10 @@ fetchUser();
 </script>
 
 <template>
-  <main class="max-h-screen h-full overflow-y-scroll pb-14 pt-24 px-4 flex flex-col">
+  <main class="flex flex-col overflow-y-scroll px-4 pb-24 pt-24">
     <form
       @submit.prevent="updateAccount()"
-      class="flex h-full flex-col justify-center gap-4"
+      class="flex flex-col justify-center gap-4"
     >
       <div class="avatar justify-center">
         <div
@@ -216,7 +232,41 @@ fetchUser();
         {{ loading ? 'Chargement...' : 'Mettre à jour' }}
       </button>
     </form>
+    <p class="mt-12 text-xl font-bold">Mes BeReal récents :</p>
+    <div v-if="!lastPublications" class="mt-4 flex flex-col gap-2 md:flex-row">
+      <div class="skeleton aspect-3/4 flex-grow"></div>
+      <div class="skeleton aspect-3/4 flex-grow"></div>
+      <div class="skeleton aspect-3/4 flex-grow"></div>
+    </div>
+    <div
+      v-else
+      class="show-case mt-4 flex flex-col items-center gap-2 md:flex-row"
+    >
+      <template v-for="(publication, index) in lastPublications" :key="index">
+        <RouterLink
+          v-if="publication"
+          :to="publication ? `/publications/${publication._id}` : `#`"
+          class="aspect-3/4 w-full rounded-lg md:w-[1/3]"
+          :class="{ 'cursor-pointer': publication }"
+        >
+          <img
+            v-if="publication"
+            :src="publication.backCamera.url"
+            class="h-full w-full rounded-lg object-cover"
+            alt=""
+          />
+        </RouterLink>
+        <div
+          v-else
+          class="skeleton aspect-3/4 w-full flex-grow md:w-[1/3]"
+        ></div>
+      </template>
+    </div>
   </main>
 </template>
 
-<style scoped></style>
+<style scoped>
+.show-case > * {
+  background-color: var(--fallback-b3, oklch(var(--b3) / var(--tw-bg-opacity)));
+}
+</style>
