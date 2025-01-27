@@ -14,7 +14,7 @@ The goal of this project is to replicate some of BeReal's core features to gain 
 
 ### 0. Preamble
 
-This application is a mobile-first PWA, designed to be used as a native app on mobile devices. Nevertheless, it can also be used on a desktop, though you will lose the main user experience of taking pictures with your front and back cameras. 
+This application is a mobile-first PWA, designed to be used as a native app on mobile devices. Nevertheless, it can also be used on a desktop, though you will lose the main user experience of taking pictures with your front and back cameras.
 
 ### 1. Login
 
@@ -101,14 +101,45 @@ The user can modify its profile picture, pseudonym, email and password.
 
 _This view is also used to logout the user._
 
+## Installation
+
+To set up the project locally, follow these steps:
+
+0. **Run the API**
+
+Before running the frontend, make sure the backend is running. Refer to the [backend repository](https://github.com/HEIG-COMEM/HEIG-VD_ArchiOWeb_REST) for instructions on how to set up the API.
+
+1. **Clone the repository**
+
+```sh
+git clone https://github.com/HEIG-COMEM/HEIG-VD_DevMobil_REST.git
+cd HEIG-VD_DevMobil_REST
+```
+
+2. **Install dependencies**
+
+```sh
+npm install
+```
+
+3. **Set up environment variables**
+
+Create a `.env` file in the root directory and add the necessary environment variables. Refer to `.env.example` for the required variables.
+
+4. **Run the application**:
+
+```sh
+npm run dev
+```
+
 ## Authors
 
 This project was carried out by:
 
-- **[Jérémie Zurflüh]**: Frontend / Backend Developer
-- **[Jérémy Martin]**: Frontend / Backend Developer
-- **[Antoine Uldry]**: Frontend Developer / Backend Developer
-- **[Steve Pasche]**: UX/UI Designer
+- **Jérémie Zurflüh**: Frontend / Backend Developer
+- **Jérémy Martin**: Frontend / Backend Developer
+- **Antoine Uldry**: Frontend Developer / Backend Developer
+- **Steve Pasche**: UX/UI Designer
 
 ---
 
