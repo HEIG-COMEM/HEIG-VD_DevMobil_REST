@@ -128,6 +128,47 @@ export const usePublicationStore = defineStore('publication', () => {
     fetchComments();
   }
 
+  const getLastPublication = async () => {
+    const currentUserId = userStore.getUser.id;
+    try {
+      const lastPublication = await fetchApi({
+          url: `/publications?userId=${currentUserId}&onlyLast=true`,
+      });
+      return lastPublication.data;
+    } catch (error) {
+      if (error.status === 404) {
+        console.log('No publication found');
+        return null;
+      }
+      console.error('Failed to fetch last publication:', error);
+      return null;
+    }
+  }
+
+
+  // function to know if the user already post since the last notification
+  const hasAlreadyPost = async () => {
+    try{
+      // Get the last notification date
+      const lastNotification = await notificationsStore.getLastBeRealNotification();
+      if (!lastNotification.sentAt) {
+        throw new Error('Failed to fetch last notification date');
+      }
+
+      // Get the last user publication date
+      const lastPublication = await getLastPublication();
+      if (!lastPublication) {
+        return false;
+      }
+
+      // Compare the two dates
+      return new Date(lastPublication.createdAt) > new Date(lastNotification.sentAt);
+    } catch (error) {
+      console.error('Failed to check if user already post:', error);
+      return false;
+    }
+  }
+
   const getPublication = computed(() => publication.value);
   const getOwner = computed(() => owner.value);
   const getComments = computed(() => comments.value);
@@ -141,6 +182,8 @@ export const usePublicationStore = defineStore('publication', () => {
 
   return {
     getPublication,
+    getLastPublication,
+    hasAlreadyPost,
     postNewPublication,
     getOwner,
     getComments,

@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { useUserStore } from '@/stores/userStore';
+import { useModalStore } from '@/stores/modalStore';
+import { usePublicationStore } from '@/stores/publicationStore';
 import HomeView from '@/views/HomeView.vue';
 import LoginView from '@/views/LoginView.vue';
 import RegisterView from '@/views/RegisterView.vue';
@@ -63,13 +65,34 @@ const router = createRouter({
  * before navigating to any route other than login and register
  */
 router.beforeEach((to, from, next) => {
-  if (
-    to.name !== 'login' &&
-    to.name !== 'register' &&
-    !useUserStore().isAuthenticated
-  )
+  const publicationStore = usePublicationStore();
+  const modalStore = useModalStore();
+  const userStore = useUserStore();
+
+  if (to.name === 'camera' && userStore.isAuthenticated) {
+    publicationStore.hasAlreadyPost().then((hasAlreadyPost) => {
+      if (hasAlreadyPost) {
+        modalStore.openModal('alreadyPosted');
+        // Si url camera, redirige
+        if (window.location.pathname === '/camera') {
+          next({ name: 'home' });
+        } else {
+          next(false); // Bloque la navigation
+        }
+      } else {
+        next(); // Continue vers /camera
+      }
+    });
+  }
+
+  // Authentification pour toutes les autres routes
+  else if (to.name !== 'login' && to.name !== 'register' && !userStore.isAuthenticated) {
     next({ name: 'login' });
-  else next();
+  }
+
+  else {
+    next(); // Continue la navigation
+  }
 });
 
 export default router;

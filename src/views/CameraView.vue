@@ -26,9 +26,6 @@ const backCameraBase64 = ref(null);
 
 const cameras = ref([]);
 
-// const displayTakenPicture = computed(
-//   () => !frontCameraBase64.value || !backCameraBase64.value,
-// );
 const fisrtPictureSrc = ref(null);
 
 const getLastNotificationTime = async () => {
